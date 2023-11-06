@@ -8,7 +8,7 @@ router.get("/signup", (req, res, next) => {
     res.render("auth/signup");
   });
   
-  router.post("/signup", isLoggedIn , async (req, res, next) => {
+  router.post("/signup" , async (req, res, next) => {
     try {
       const { email, password, name } = req.body;
   
@@ -42,18 +42,22 @@ router.get("/signup", (req, res, next) => {
     console.log("SESSION =====> ", req.session);
     const logInError="Wrong email or password";
     try {
+      console.log(req.body.password)
       const { email, password } = req.body;
   
       const user = await User.findOne({ email: email });
   
       console.log(user);
 
-      
-      const isMatch = bcryptjs.compareSync(password, user.password);
-      if (isMatch) {
-        req.session.currentUser = user;
-        console.log("match");
-        res.redirect("/user/profile");
+      if(user){
+        const isMatch = bcryptjs.compareSync(password, user.password);
+        if (isMatch) {
+          req.session.currentUser = user;
+          console.log("match");
+          res.redirect("/user/profile");
+        } else {
+          res.render("auth/login",{logInError});
+        }        
       } else {
         res.render("auth/login",{logInError});
       }
