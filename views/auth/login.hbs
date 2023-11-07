@@ -1,8 +1,8 @@
 <h1>LOGIN</h1>
 <form action="" method="POST">
       <div class="container">
-      <label for="email"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="email" required>
+      <label for="email"><b>User</b></label>
+      <input type="text" placeholder="Enter Username or Email" name="emailOrName" required>
 
       <label for="password"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="password" required>
@@ -11,4 +11,6 @@
     </div>
     
 </form>
+{{#if logInError}}
 <div>{{this.logInError}}</div>
+{{/if}}

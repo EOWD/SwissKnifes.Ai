@@ -4,17 +4,20 @@
     <p>Please fill in this form to create an account.</p>
     <hr />
  <label for="name"><b>Name</b></label>
-    <input type="text" placeholder="name" name="name" required />
+    <input type="text" placeholder="name" name="name"  />
     <label for="email"><b>Email</b></label>
-    <input type="email" placeholder="Enter Email" name="email" required />
+    <input type="text" placeholder="Enter Email" name="email"  />
 
     <label for="password"><b>Password</b></label>
     <input
       type="password"
       placeholder="Enter Password"
       name="password"
-      required
+      
     />
+      {{#if errorMessage}}
+    <p class="error">{{this.errorMessage}}</p>
+  {{/if}}
 
     <p>By creating an account you agree to our
       <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
