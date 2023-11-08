@@ -9,7 +9,7 @@ const { isLoggedIn, isLoggedOut } = require("../middleware/route-guard.js");
 
 router.get("/profile", isLoggedIn, (req, res, next) => {
     res.render("profile/profile", { userInSession: req.session.currentUser });
-  });
+});
   
   router.post("/profile", async (req, res, next) => {
     console.log(req.body.ask);
