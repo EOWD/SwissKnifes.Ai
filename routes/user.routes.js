@@ -32,6 +32,23 @@ router.get("/profile", isLoggedIn, (req, res, next) => {
     // You can also send the answer back in the response to the client
    res.json({ resData });
   });
+  router.post('/image',async(req, res) => {
+
+try {
+
+  const image = await openai.images.generate({ model: "dall-e-3", prompt: "super real man standing on the moon with a green hat drinking water from a blue glass cup" });
+  const img=image.data[0].url
+  res.render('profile/profile', { img:img})
+console.log(img);
+
+}  catch (error) {
+  console.log("log in error", error);
+}
+
+
+
+
+  });
 
   router.post('/logout', (req, res, next) => {
     req.session.destroy(err => {
