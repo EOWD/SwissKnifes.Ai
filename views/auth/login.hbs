@@ -1,16 +1,26 @@
 <h1>LOGIN</h1>
 <form action="" method="POST">
-      <div class="container">
-      <label for="email"><b>User</b></label>
-      <input type="text" placeholder="Enter Username or Email" name="emailOrName" required>
+  <div class="container">
+    <label for="email"><b>User</b></label>
+    <input
+      type="text"
+      placeholder="Enter Username or Email"
+      name="emailOrName"
+      required
+    />
 
-      <label for="password"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="password" required>
+    <label for="password"><b>Password</b></label>
+    <input
+      type="password"
+      placeholder="Enter Password"
+      name="password"
+      required
+    />
 
-      <button type="submit">Login</button>
-    </div>
-    
+    <button type="submit">Login</button>
+  </div>
+
 </form>
 {{#if logInError}}
-<div>{{this.logInError}}</div>
+  <div>{{this.logInError}}</div>
 {{/if}}
