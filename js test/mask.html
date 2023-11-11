@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    canvas {
+      border: 1px solid #000;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="photoCanvas" width="800" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById('photoCanvas');
+    const ctx = canvas.getContext('2d');
+    let isSelecting = false;
+    let startX, startY, endX, endY;
+
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseup', handleMouseUp);
+
+    function handleMouseDown(e) {
+      isSelecting = true;
+      startX = e.clientX - canvas.getBoundingClientRect().left;
+      startY = e.clientY - canvas.getBoundingClientRect().top;
+    }
+
+    function handleMouseMove(e) {
+      if (!isSelecting) return;
+
+      endX = e.clientX - canvas.getBoundingClientRect().left;
+      endY = e.clientY - canvas.getBoundingClientRect().top;
+
+      // Clear previous selection
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the selection rectangle
+      ctx.strokeStyle = 'blue';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+    }
+
+    function handleMouseUp() {
+      isSelecting = false;
+    }
+  </script>
+</body>
+</html>

@@ -35,6 +35,13 @@ app.use("/auth", authRoutes);
 const userRoutes = require("./routes/user.routes");
 app.use("/user", userRoutes);
 
+const dallRoutes = require("./routes/dall.routes");
+app.use("/dall", dallRoutes);
+
+const driveRoutes = require("./routes/drive.routes");
+app.use("/drive", driveRoutes);
+
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 

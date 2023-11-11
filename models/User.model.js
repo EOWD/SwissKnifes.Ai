@@ -7,7 +7,7 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       required: true,
-      unique: true
+      unique: true,
     },
     email: {
       type: String,
@@ -15,22 +15,24 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.'],
+      match: [/^\S+@\S+\.\S+$/, "Please use a valid email address."],
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
-     cast: [
+ 
+
+    images: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Chat', 
+        ref: "ImageData",
       },
     ],
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`    
-    timestamps: true
+    // this second object adds extra properties: `createdAt` and `updatedAt`
+    timestamps: true,
   }
 );
 
