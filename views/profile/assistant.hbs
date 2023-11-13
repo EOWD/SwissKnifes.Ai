@@ -1,0 +1,26 @@
+<h1>Assistant Response</h1>
+<form action="/assistant/newAssistant" method="POST">
+    <button>Create New Assistant</button>
+</form>
+<p>Response: {{response}}</p>
+<br>
+<p>All Assistants:</p>
+<ul>
+    {{#each listAll}}
+        <a href="{{this.id}}">
+            <li>ID: {{this.id}}</li>
+        </a>
+    {{/each}}
+</ul>
+<br>
+<br>
+<p>Delete Assistant (by clicking on one)</p>
+<ul>
+    {{#each listAll}}
+        <a href="/assistant/delete/{{this.id}}">
+            <li>ID: {{this.id}}</li>
+        </a>
+    {{/each}}
+</ul>
+<br><br><br><br><br><br>
+<a href="/assistant">Reload</a>
