@@ -27,8 +27,9 @@ app.locals.appTitle = `${capitalize(projectName)}`;
 
 // 👇 Start handling routes here
 const indexRoutes = require("./routes/index.routes");
-const assistantRoutes = require("./routes/assistant.routes"); //just added this route for the assistant.routes.js to work, should not be a direct conflict
-app.use("/", indexRoutes, assistantRoutes);
+const assistantRoutes = require("./routes/assistant.routes");
+const threadRoutes = require("./routes/thread.routes");
+app.use("/", indexRoutes, assistantRoutes, threadRoutes);
 
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);

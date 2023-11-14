@@ -1,0 +1,37 @@
+<h1>Thread Chat</h1>
+<p>All open Threads</p>
+<ul>
+    {{#each openThreads}}
+        <li>{{this.threadId}} - <a href="/thread/delete/{{this.threadId}}">Delete</a></li>
+    {{/each}}
+</ul>
+<form action="/thread/createThread" method="POST">
+    <label for="message">Message
+        <input type="text" name="message" id="message">
+    </label>
+    <button>Create Thread</button>
+</form>
+<br><br><br>
+<p>Your current thread:</p>
+<form action="/thread/loadMessages" method="POST">
+    <select name="thread_id" id="thread_id">
+        {{#each openThreads}}
+            <option value="{{this.threadId}}">{{this.threadId}}</option>
+        {{/each}}
+    </select>
+    <button>Load Messages</button>
+</form>
+<br><br>
+<p>Thread Messages:</p>
+<ul>
+    {{#each threadMessages.data.[0].content.[0].text}}
+        <li>{{this.value}}</li>
+    {{/each}}
+</ul>
+<br><br>
+<form action="/thread/sendMessage" method="POST" class="form">
+    <label for="message">
+        <input type="text" name="message" id="message">
+    </label>
+    <button>Send</button>
+</form>

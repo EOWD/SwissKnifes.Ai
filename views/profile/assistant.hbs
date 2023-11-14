@@ -1,26 +1,93 @@
-<h1>Assistant Response</h1>
-<form action="/assistant/newAssistant" method="POST">
-    <button>Create New Assistant</button>
-</form>
-<p>Response: {{response}}</p>
-<br>
-<p>All Assistants:</p>
-<ul>
-    {{#each listAll}}
-        <a href="{{this.id}}">
-            <li>ID: {{this.id}}</li>
-        </a>
-    {{/each}}
-</ul>
-<br>
-<br>
-<p>Delete Assistant (by clicking on one)</p>
-<ul>
-    {{#each listAll}}
-        <a href="/assistant/delete/{{this.id}}">
-            <li>ID: {{this.id}}</li>
-        </a>
-    {{/each}}
-</ul>
-<br><br><br><br><br><br>
+<h1>Assistants</h1>
+
+<div class="assistantContainer">
+    <div class="allAssistants">
+        <p>All Assistants</p>
+        <ul>
+            {{#each listAll}}
+                <li>{{this.name}} - <a href="/assistant/delete/{{this.assistantId}}">Delete</a></li>
+                
+            {{/each}}
+            {{!-- <br>
+            OpenAI DB (should match above):
+            <br>
+            {{#each listOpenaiAssistants}}
+                <a href="/assistant/{{this.id}}"><li>{{this.name}}</a> - <a href="/assistant/delete/{{this.id}}">Delete</a></li>
+                
+            {{/each}} --}}
+        </ul>
+        <br><br><br>
+        <form action="/assistant/newAssistant" method="POST" class="createAssistantForm">
+        <h3 style="margin-top: 0px">Create new Assistant</h3>
+            <label for="name">Name
+                <input type="text" name="name" id="name" required>
+            </label>
+            <label for="description">Description
+                <input type="text" name="description" id="description" required>
+            </label>
+            <label for="tools">Tools
+                <select name="tools" id="tools" multiple>
+                    <option value="code_interpreter">Code Interpreter</option>
+                    <option value="retrieval">Retrieval</option>
+                </select>
+            </label>
+            <label for="model">Model
+                <select name="model" id="model" required>
+                    <option value="gpt-4-1106-preview">GPT 4 Preview (1106)</option>
+                    <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo (1106)</option>
+                </select>
+            </label>
+
+            <button>Create New Assistant</button>
+        </form>
+    </div>
+
+    <div class="threadContainer">
+        <div class="threadMessages">
+            <p>Thread Messages:</p>
+            <ul>
+                {{#each threadMessages}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <form action="/assistant/sendMessage" method="POST" class="form">
+                <label for="message">
+                    <input type="text" name="message" id="message">
+                </label>
+                <button>Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <a href="/assistant">Reload</a>
+<style>
+    .assistantContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 100px;
+        padding: 50px;
+    }
+
+    .allAssistants {
+        background-color: rgb(238, 238, 238);
+        padding: 20px 50px;
+        width: 30%;
+    }
+
+    .threadContainer {
+        display: flex;
+        background-color: rgb(238, 238, 238);
+        width: 70%;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .createAssistantForm {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        background-color: rgb(216, 216, 216);
+    }
+</style>
