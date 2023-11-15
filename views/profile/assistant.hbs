@@ -43,6 +43,9 @@
     </div>
 
     <div class="threadContainer">
+        <div class="assistantSelector">
+            <p>Select Assistant:</p>
+        </div>
         <div class="threadMessages">
             <p>Thread Messages:</p>
             <ul>
@@ -54,6 +57,11 @@
                 <label for="message">
                     <input type="text" name="message" id="message">
                 </label>
+                <select name="assistant_id" id="assistant_id">
+                    {{#each listAll}}
+                        <option value="{{this.assistantId}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
                 <button>Send</button>
             </form>
         </div>

@@ -2,18 +2,18 @@ const { Schema, model } = require("mongoose");
 
 const threadMessagesSchema = new Schema(
   {
-    threadId: {
-      type: String,
-      required: true,
-      unique: true
-    },
     thread_db_reference_id: {
       type: Schema.Types.ObjectId,
       ref: 'Thread',
       required: true
     },
+    role: {
+      type: String,
+      required: true
+    },
     message: {
       type: String,
+      required: true
     },
     userId: {
       type: Schema.Types.ObjectId,

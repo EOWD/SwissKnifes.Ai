@@ -25,17 +25,48 @@ class Thread {
     }
   }
   
-  async createMessage(userInput) {
+  async createMessage(threadId, userInput) {
     try {
       // Continue the conversation by adding user's questions or instructions
-      const response = await this.openaiApi.threads.createMessage(this.threadId, {
-        role: 'user',
-        content: userInput,
-      });
+      const threadMessages = await this.openaiApi.beta.threads.messages.create(
+        threadId,
+        { role: "user", content: userInput }
+      );
+      return threadMessages;
       console.log('Create Message with input:', userInput);
     } catch (error) {
       console.error('Error continuing conversation:', error);
     }
+  }
+
+  async runThread(threadId, assitantId) {
+    const run = await this.openaiApi.beta.threads.runs.create(
+        threadId,
+      { assistant_id: assitantId }
+    );
+  
+    return run;
+  }
+
+  async createThreadAndRun(assistantId, message) {
+    const run = await this.openaiApi.beta.threads.createAndRun({
+      assistant_id: assistantId,
+      thread: {
+        messages: [
+          { role: "user", content: message },
+        ],
+      },
+    });
+  
+    return run;
+  }
+
+  async retrieveRun(threadId, runId) {
+    const run = await this.openaiApi.beta.threads.runs.retrieve(
+        threadId,
+      runId
+    );
+    return run;
   }
 
   async deleteThread(threadId) {

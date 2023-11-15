@@ -1,37 +1,79 @@
 <h1>Thread Chat</h1>
-<p>All open Threads</p>
-<ul>
-    {{#each openThreads}}
-        <li>{{this.threadId}} - <a href="/thread/delete/{{this.threadId}}">Delete</a></li>
-    {{/each}}
-</ul>
-<form action="/thread/createThread" method="POST">
-    <label for="message">Message
-        <input type="text" name="message" id="message">
-    </label>
-    <button>Create Thread</button>
-</form>
-<br><br><br>
-<p>Your current thread:</p>
-<form action="/thread/loadMessages" method="POST">
-    <select name="thread_id" id="thread_id">
-        {{#each openThreads}}
-            <option value="{{this.threadId}}">{{this.threadId}}</option>
-        {{/each}}
-    </select>
-    <button>Load Messages</button>
-</form>
-<br><br>
-<p>Thread Messages:</p>
-<ul>
-    {{#each threadMessages.data.[0].content.[0].text}}
-        <li>{{this.value}}</li>
-    {{/each}}
-</ul>
-<br><br>
-<form action="/thread/sendMessage" method="POST" class="form">
-    <label for="message">
-        <input type="text" name="message" id="message">
-    </label>
-    <button>Send</button>
-</form>
+<div class="threadContainer">
+    <div class="allThreads">
+        <p>All open Threads</p>
+        <ul>
+            {{#each openThreads}}
+                <li><a href="/thread/{{this.threadId}}">{{this.threadId}}</a> - <a href="/thread/delete/{{this.threadId}}">Delete</a></li>
+            {{/each}}
+        </ul>
+        <br><hr><br><br>
+        <h3>Select your Assistant:</h3>
+        <form action="/thread/createThread" method="POST">
+            <select name="assistantId" id="assistant">
+                {{#each listAllAssistants}}
+                    <option value="{{this.assistantId}}">{{this.name}}</option>
+                {{/each}}
+            </select>
+            <br><br>
+            <label for="message">Message
+                <input type="text" name="message" id="message">
+            </label>
+            <button>Create Thread</button>
+        </form>
+    </div>
+    <div class="messagesContainer">
+        <div class="messages">
+            <p>Thread Messages:</p>
+            <ul>
+                {{#each currentThreadMessages.data}}
+                    <li>{{this.content.[0].text.value}}</li>
+                {{/each}}
+            </ul>
+            <form action="/thread/runThread" method="POST" class="form">
+            <input type="hidden" id="hiddenAssistantField" name="assistantId" value="asst_TSCLa3dwgyTOGLSzzBeXrJ0o">
+            <input type="hidden" name="currentThread" value="{{currentThread}}">
+                <button>Run Thread</button>
+            </form>
+        </div>
+        <form action="/thread/sendMessage" method="POST" class="form">
+            <label for="message">
+                <input type="text" name="message" id="message">
+                <input type="hidden" name="currentThread" value="{{currentThread}}">
+            </label>
+            <button>Send</button>
+        </form>
+    </div>
+</div>
+
+
+<style>
+    .threadContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 100px;
+        padding: 50px;
+    }
+
+    .allThreads {
+        background-color: rgb(238, 238, 238);
+        padding: 20px 50px;
+        width: 30%;
+    }
+
+    .messagesContainer {
+        display: flex;
+        background-color: rgb(238, 238, 238);
+        width: 70%;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .createAssistantForm {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        background-color: rgb(216, 216, 216);
+    }
+</style>
