@@ -21,28 +21,32 @@
             </label>
             <button>Create Thread</button>
         </form>
+        {{#if error}}
+            <p style="color: red">{{error}}</p>
+            <a href="/thread"><p>Reload Page</p></a>
+        {{/if}}
     </div>
     <div class="messagesContainer">
         <div class="messages">
             <p>Thread Messages:</p>
             <ul>
-                {{#each currentThreadMessages.data}}
-                    <li>{{this.content.[0].text.value}}</li>
+                {{#each currentThreadMessages}}
+                    {{#if (eq this.role 'assistant')}}
+                        <li class="assistant-message"><b>Assistant:</b><br>{{this.content.[0].text.value}}</li>
+                    {{else if (eq this.role 'user')}}
+                        <li class="user-message"><b>User:</b><br>{{this.content.[0].text.value}}</li>
+                    {{/if}}
                 {{/each}}
             </ul>
-            <form action="/thread/runThread" method="POST" class="form">
-            <input type="hidden" id="hiddenAssistantField" name="assistantId" value="asst_TSCLa3dwgyTOGLSzzBeXrJ0o">
-            <input type="hidden" name="currentThread" value="{{currentThread}}">
-                <button>Run Thread</button>
-            </form>
-        </div>
-        <form action="/thread/sendMessage" method="POST" class="form">
+            <form action="/thread/sendMessage" method="POST" class="form">
             <label for="message">
                 <input type="text" name="message" id="message">
                 <input type="hidden" name="currentThread" value="{{currentThread}}">
             </label>
             <button>Send</button>
         </form>
+        </div>
+        
     </div>
 </div>
 
@@ -67,6 +71,7 @@
         width: 70%;
         justify-content: space-around;
         align-items: center;
+        padding: 25px;
     }
 
     .createAssistantForm {
@@ -75,5 +80,17 @@
         gap: 10px;
         padding: 20px;
         background-color: rgb(216, 216, 216);
+    }
+
+
+    .user-message {
+        list-style: none;
+        padding: 5px 0;
+    }
+
+    .assistant-message {
+        color: #5C8374;
+        list-style: none;
+        padding: 5px 0;
     }
 </style>

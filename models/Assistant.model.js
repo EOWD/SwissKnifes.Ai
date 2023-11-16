@@ -16,7 +16,10 @@ const assistantSchema = new Schema(
       type: String,
       required: true,
     },
-    instruction: {
+    description: {
+      type: String
+    },
+    instructions: {
       type: String,
       required: true
     }

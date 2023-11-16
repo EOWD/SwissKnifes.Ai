@@ -11,12 +11,13 @@ class VanillaAssistant {
     this.model = 'gpt-4-1106-preview'
   }
 
-  async createAssistant(assistantName, description, tools, model) {
+  async createAssistant(assistantName, description, instructions, tools, model) {
     try {
       // Create the assistant with all available tools
       const response = await this.openaiApi.beta.assistants.create({
         name: assistantName,
-        instructions: description,
+        description: description,
+        instructions: instructions,
         tools: tools,
         model: model,
       });
@@ -59,6 +60,14 @@ class VanillaAssistant {
     } catch (error) {
       console.error('Error uploading file:', error);
     }
+  }
+
+  async retrieveAssistant(assistantId) {
+    const myAssistant = await this.openaiApi.beta.assistants.retrieve(
+      assistantId
+    );
+  
+    return myAssistant;
   }
 
 

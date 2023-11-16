@@ -34,7 +34,8 @@ router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
         userId = req.session.currentUser._id;
         const listAllAssistants = await assistantInstance.listAssistants();
         const currentThread = req.params.threadId
-        const currentThreadMessages = await thread.listMessages(currentThread)
+        const notReversedThreadMessages = await thread.listMessages(currentThread)
+        const currentThreadMessages = notReversedThreadMessages.data.reverse();
         const openThreads = await thread.listThreads(userId)
         res.render("profile/thread", {currentThreadMessages, openThreads, currentThread, listAllAssistants})
     } catch (error) {
@@ -48,12 +49,15 @@ router.post("/thread/createThread", isLoggedIn, async (req, res, next) => {
         userId = req.session.currentUser._id;
         const message = req.body.message;
         const assistantId = req.body.assistantId;
+
+        //create and run the thread
         const createdThread = await thread.createThreadAndRun(assistantId, message);
         const threadId = createdThread.thread_id;
         const runId = createdThread.id;
 
         const newThread = await Thread.create({
             threadId: createdThread.thread_id,
+            assistantId: assistantId,
             userId: userId,
         });
 
@@ -64,15 +68,36 @@ router.post("/thread/createThread", isLoggedIn, async (req, res, next) => {
             userId: userId,
         });
 
+        //wait and check for the status to complete
         let status = await thread.retrieveRun(threadId, runId);
         while (status.status != "completed") {
             await sleep(500);
             status = await thread.retrieveRun(threadId, runId);
             console.log(status.status)
+
+            if (status.status === 'failed'){
+                break;
+            }
         }
 
+        // Upload the response from the API to the DB and redirect
         if (status.status === 'completed') {
-            res.redirect(`/thread/${threadId}`);
+            try {
+                const allThreadMessages = await thread.listMessages(threadId)
+                await threadMessages.create({
+                    thread_db_reference_id: newThread._id,
+                    role: "assistant",
+                    message: allThreadMessages.data[0].content[0].text.value,
+                    userId: userId,
+                });
+                res.redirect(`/thread/${threadId}`);
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        if (status.status === 'failed'){
+            res.render(`profile/thread`, {error: "API Req. failed"})
         }
     } catch (error) {
         console.error('Error creating assistant:', error);
@@ -88,16 +113,42 @@ router.post("/thread/sendMessage", isLoggedIn, async (req, res, next) => {
         const threadId = req.body.currentThread
         const addMessage = await thread.createMessage(threadId, req.body.message)
         
-        const threadDbId = await Thread.findOne({threadId})
+        const threadDb = await Thread.findOne({threadId})
 
         await threadMessages.create({
-            thread_db_reference_id: threadDbId._id,
+            thread_db_reference_id: threadDb._id,
             role: "user",
             message: req.body.message,
             userId: userId,
         });
 
-        res.redirect(`/thread/${threadId}`)
+        const runThread = await thread.runThread(threadId, threadDb.assistantId);
+        let status = await thread.retrieveRun(threadId, runThread.id);
+        while (status.status != "completed") {
+            await sleep(500);
+            status = await thread.retrieveRun(threadId, runThread.id);
+            console.log(status.status)
+        }
+
+        if (status.status === 'completed') {
+            try {
+                const allThreadMessages = await thread.listMessages(threadId)
+                await threadMessages.create({
+                    thread_db_reference_id: threadDb._id,
+                    role: "assistant",
+                    message: allThreadMessages.data[0].content[0].text.value,
+                    userId: userId,
+                });
+                res.redirect(`/thread/${threadId}`);
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        if (status.status === 'failed'){
+            res.render(`profile/thread`, {error: "API Req. failed"})
+        }
+
     } catch (error) {
         console.error('Error creating assistant:', error);
         next(error);
@@ -106,7 +157,7 @@ router.post("/thread/sendMessage", isLoggedIn, async (req, res, next) => {
 })
 
 
-router.post("/thread/loadMessages", isLoggedIn, async (req, res, next) => {
+/* router.post("/thread/loadMessages", isLoggedIn, async (req, res, next) => {
     try {
         const threadId = req.body.thread_id;
         const threadMessages = await thread.listMessages(threadId);
@@ -116,10 +167,10 @@ router.post("/thread/loadMessages", isLoggedIn, async (req, res, next) => {
         console.error('Error creating assistant:', error);
         next(error);
     }
-})
+}) */
 
 
-router.post("/thread/runThread", isLoggedIn, async (req, res, next) => {
+/* router.post("/thread/runThread", isLoggedIn, async (req, res, next) => {
     try {
         const runThread = await thread.runThread(req.body.currentThread, req.body.assistantId);
         let status = await thread.retrieveRun(req.body.currentThread, runThread.id);
@@ -137,7 +188,7 @@ router.post("/thread/runThread", isLoggedIn, async (req, res, next) => {
         console.error('Error creating assistant:', error);
         next(error);
     }
-})
+}) */
 
 
 router.get("/thread/delete/:id", isLoggedIn, async (req, res, next) => {

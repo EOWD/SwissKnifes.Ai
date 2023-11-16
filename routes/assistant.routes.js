@@ -28,13 +28,14 @@ router.post("/assistant/newAssistant", isLoggedIn, async (req, res, next) => {
             return { type: tool };
         });
 
-        const createAssistantResponse = await assistantInstance.createAssistant(req.body.name, req.body.description, toolsFormatted, req.body.model);
+        const createAssistantResponse = await assistantInstance.createAssistant(req.body.name, req.body.description, req.body.instructions, toolsFormatted, req.body.model);
 
         await Assistant.create({
             assistantId: createAssistantResponse.id,
             name: createAssistantResponse.name,
             model: createAssistantResponse.model,
-            instruction: createAssistantResponse.instructions,
+            description: createAssistantResponse.description,
+            instructions: createAssistantResponse.instructions,
         });
 
         const listAllAssistants = await assistantInstance.listAssistants();
@@ -44,6 +45,22 @@ router.post("/assistant/newAssistant", isLoggedIn, async (req, res, next) => {
         next(error);
     }
 })
+
+
+router.get("/assistant/:id/edit", isLoggedIn, async (req, res) => {
+    try {
+        userId = req.session.currentUser._id;
+        const assistantId = req.params.id
+        
+        const asssistantData = await assistantInstance.retrieveAssistant(assistantId)
+        console.log(asssistantData)
+
+        res.render("profile/modifyAssistant", {asssistantData});
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 
 router.get("/assistant/delete/:id", isLoggedIn, async (req, res, next) => {
     const threadId = req.params.id;

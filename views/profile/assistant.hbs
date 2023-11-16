@@ -5,7 +5,7 @@
         <p>All Assistants</p>
         <ul>
             {{#each listAll}}
-                <li>{{this.name}} - <a href="/assistant/delete/{{this.assistantId}}">Delete</a></li>
+                <li>{{this.name}} - <a href="/assistant/delete/{{this.assistantId}}">Delete</a> - <a href="/assistant/{{this.assistantId}}/edit">Edit</a></li>
                 
             {{/each}}
             {{!-- <br>
@@ -24,6 +24,9 @@
             </label>
             <label for="description">Description
                 <input type="text" name="description" id="description" required>
+            </label>
+            <label for="instructions">Instructions
+                <input type="text" name="instructions" id="instructions" required>
             </label>
             <label for="tools">Tools
                 <select name="tools" id="tools" multiple>

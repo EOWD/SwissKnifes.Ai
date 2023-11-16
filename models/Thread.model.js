@@ -7,6 +7,10 @@ const threadSchema = new Schema(
       required: true,
       unique: true
     },
+    assistantId: {
+      type: String,
+      required: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
