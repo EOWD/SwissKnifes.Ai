@@ -23,10 +23,10 @@ const userSchema = new Schema(
     },
  
 
-    images: [
+    knifeDrive: [
       {
         type: Schema.Types.ObjectId,
-        ref: "ImageData",
+        ref: "knifeDrive",
       },
     ],
   },

@@ -12,13 +12,36 @@ const openai = new OpenAI({
 });
 const { isLoggedIn, isLoggedOut } = require("../middleware/route-guard.js");
 
+router.get("/", isLoggedIn, async (req, res) => {
+  try {
+    const user = req.session.currentUser;
+    const id = user._id;
 
-router.get('/knife',isLoggedIn,async(req,res)=>{
-res.render('profile/knife-drive')
-})
+    // console.log(id);
+    const images = await User.findById(id).populate("images");
 
+    //console.log(images.createdAt)
 
+    res.render("profile/knife-drive", { images });
+  } catch (error) {
+    console.log(error);
+  }
+});
+router.post("/erase/:id", isLoggedIn, async (req, res,next) => {
+  try {
+    const imageId = req.params.id;
+    console.log(imageId);
+    // Perform the deletion
+    const imgdelete= await ImageData.findByIdAndDelete(imageId);
 
+    // Redirect to the knife-drive page after deletion
+    res.redirect("/drive");
+  } catch (error) {
 
+    
+    console.log(error);
+  
+  }
+});
 
-module.exports=router
+module.exports = router;

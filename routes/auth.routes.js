@@ -81,6 +81,11 @@ router.post("/login", async (req, res, next) => {
     } else {
       res.render("auth/login", { logInError });
     }
+    const currentUser = await req.session.currentUser._id;
+    const driveSession = await drive.create({
+      userId: currentUser,
+    
+    });
   } catch (error) {
     console.log("log in error", error);
   }

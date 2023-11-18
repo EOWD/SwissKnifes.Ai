@@ -10,3 +10,55 @@ a {
 h1 {
   color: 15px;
 }
+.grid-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto; 
+  grid-template-columns: 1fr 3fr; 
+  grid-template-areas: 
+      "top-nav top-nav"
+      "side-nav main-content"
+      "footer footer";
+  height: 100vh; 
+}
+
+.top-nav {
+  grid-area: top-nav;
+  display: flex;
+
+  
+}
+
+.side-nav {
+  grid-area: side-nav;
+ 
+ 
+}
+
+.main-content {
+  grid-area: main-content;
+ 
+}
+
+.footer {
+  grid-area: footer;
+  
+}
+#chatbot{
+  display: block;
+
+}
+#dall{
+  display: none;
+}
+#vision{
+  display: none;
+}
+#dall-edit{
+  display: none;
+}
+#transcript{
+  display: none;
+}
+#text-to-speech{
+  display: none;
+}
