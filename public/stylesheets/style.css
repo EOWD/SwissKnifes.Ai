@@ -43,8 +43,18 @@ h1 {
   grid-area: footer;
   
 }
+#lab{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns with equal width */
+    /* Two rows with equal height */
+  gap: 10px; 
+}
+.lab-item {
+  border: 1px solid #ccc; /* Add borders or styling to grid items as needed */
+  padding: 10px;
+}
 #chatbot{
-  display: block;
+  display: none;
 
 }
 #dall{

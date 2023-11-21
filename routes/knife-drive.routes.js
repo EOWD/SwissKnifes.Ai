@@ -3,10 +3,11 @@ const drive = require("../models/knifeDrive.model");
 const multer = require("multer");
 const path = require("path");
 const Vision = require("../classes/Vision.class.js");
+const Chat = require("../classes/chatbot.class.js");
 const fs = require("fs");
 const { createReadStream } = fs;
 const mongoose = require("mongoose");
-const { Readable } = require('stream');
+const { Readable } = require("stream");
 const User = require("../models/User.model");
 const Edit = require("../models/dallEdit.model");
 const ImageData = require("../models/dall.model");
@@ -25,39 +26,35 @@ const { isLoggedIn, isLoggedOut } = require("../middleware/route-guard.js");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-
-
-
 router.get("/session", isLoggedIn, async (req, res, next) => {
   try {
     const currentUser = await req.session.currentUser._id;
     const driveSession = await drive.create({
       userId: currentUser,
-    
     });
-    const sessionId=driveSession._id
+    const sessionId = driveSession._id;
     await User.updateOne(
-      { _id: currentUser},
-      { $push: { knifeDrive: sessionId } })
+      { _id: currentUser },
+      { $push: { knifeDrive: sessionId } }
+    );
 
-    console.log (currentUser)
-    res.render('swiss-knife-drive/swissKnifeDrive',)
-  }catch{res.send}
-  });
-
-
-
-
-
-router.get("/", isLoggedIn, async (req, res, next) => {
-try {
-  const currentUser = await req.session.currentUser._id;
-
-  console.log (req.session.currentUser)
-  res.render('swiss-knife-drive/swissKnifeDrive')
-}catch{res.send}
+    console.log(currentUser);
+    res.render("swiss-knife-drive/swissKnifeDrive");
+  } catch {
+    res.send;
+  }
 });
 
+router.get("/", isLoggedIn, async (req, res, next) => {
+  try {
+    const currentUser = await req.session.currentUser._id;
+
+    console.log(req.session.currentUser);
+    res.render("swiss-knife-drive/swissKnifeDrive");
+  } catch {
+    res.send;
+  }
+});
 
 router.post("/knife", async (req, res, next) => {
   //const isLoading = res.locals.isLoading;
@@ -65,11 +62,9 @@ router.post("/knife", async (req, res, next) => {
   try {
     const { prompt, model, num, quality, size, style } = req.body;
     //console.log(model);
-  const currentUser = await req.session.currentUser._id;
+    const currentUser = await req.session.currentUser._id;
 
     const number = +num;
-    
-
 
     const Dall = new dall({ prompt, model, number, quality, size, style });
     const response = await Dall.generate();
@@ -77,7 +72,7 @@ router.post("/knife", async (req, res, next) => {
     // console.log(response);
     const data = response.data[0];
     //console.log(data);
-   
+
     const newImage = await ImageData.create({
       userId: currentUser,
       prompt: prompt,
@@ -85,29 +80,27 @@ router.post("/knife", async (req, res, next) => {
     });
     const newImageId = newImage.id;
     console.log(newImageId);
-    const user= await User.findById(currentUser)
-    const  driveSession = user.knifeDrive[0]
+    /*const user = await User.findById(currentUser);
+    const driveSession = user.knifeDrive[0];
     await drive.findOneAndUpdate(
-     { _id: driveSession },
-     { $push: { dall: newImage._id } }
-   );
-   await User.updateOne(
-    { _id: currentUser },
-    { $push: { knifeDrive: driveSession._id } }
-  );
-  
+      { _id: driveSession },
+      { $push: { dall: newImage._id } }
+    );*/
+    await User.updateOne(
+      { _id: currentUser },
+      { $push: { images: newImage._id } }
+    );
+    const status = data ? true : false;
+    await User.findById(currentUser).populate("images");
+    res.render("swiss-knife-drive/swissKnifeDrive", {
+      imageUrl: `data:image/png;base64,${data.b64_json}`,
+      prompt,
+      size,
+      newImageId,
+      showSpinner: false,
+      status,
+    });
 
-   
-      await User.findById(currentUser).populate("knifeDrive");
-      
-      res.render("swiss-knife-drive/swissKnifeDrive", {
-        imageUrl: `data:image/png;base64,${data.b64_json}`,
-        prompt,
-        size,
-        newImageId,
- showSpinner:false,
-      });
-    
     // const binaryData = Buffer.from(data, 'base64');
     //console.log(binaryData)
   } catch (error) {
@@ -130,23 +123,46 @@ router.post("/knife", async (req, res, next) => {
       });
       // For other errors, you can render a generic error message
     } else {
-      console.log(error)
+      console.log(error);
       return res.render("profile/image-generator", {
         message: "Something is of, give it another shot",
-
       });
     }
   }
 });
+router.post('/upload', upload.single("image1"), async (req, res) => {
+  try {
+      let imageBuffer;
 
+      // Check if Multer successfully processed the file
+      if (req.file) {
+          imageBuffer = req.file.buffer;
+      } else {
+          return res.status(400).send("No file uploaded");
+      }
 
-router.post("/upload", upload.single("image1"), async (req, res) => {
+      const prompt = req.body.userPromptText;
+      const base64 = imageBuffer.toString("base64");
+
+      const vision = new Vision(prompt, base64);
+      const response = await vision.generate();
+
+      res.render("swiss-knife-drive/swissKnifeDrive", {
+          res: response.choices[0].message.content,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+  }
+});
+
+/*router.post("/upload", upload.single("image1"), async (req, res) => {
   try {
     // Check if Multer successfully processed the file
     if (!req.file) {
       return res.status(400).send("No file uploaded");
     }
-const prompt= req.body.userPromptText
+    const prompt = req.body.userPromptText;
     // Access the buffer of the uploaded file
     const imageBuffer = req.file.buffer;
 
@@ -156,9 +172,10 @@ const prompt= req.body.userPromptText
     const vision = new Vision(prompt, base64);
     const response = await vision.generate();
     console.log(response.choices[0].message.content);
-res.send (response.choices[0].message.content)
+    res.render("swiss-knife-drive/swissKnifeDrive", {
+      res: response.choices[0].message.content,
+    });
     // Do something with the base64 data, such as saving it to a database or sending a response
-  
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -166,10 +183,7 @@ res.send (response.choices[0].message.content)
 
   // ... process the file and handle vision generation ...
 
-  
- 
-
-  /*try {
+  try {
       const { userPromptText } = req.body;
       console.log(userPromptText);
 
@@ -184,125 +198,142 @@ res.send (response.choices[0].message.content)
 
       res.send("File uploaded and vision generated successfully");
   }catch(err)
-   {console.log(err)}*/
+   {console.log(err)}
+});*/
 
-
-
-  });
-
-  router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
-    try {
-      const currentUser = await req.session.currentUser._id;
-      const { voice, text } = req.body;
-  
-      try {
-        const mp3 = await openai.audio.speech.create({
-          model: "tts-1",
-          input: text,
-          voice: voice,
-        });
-  
-        const buffer = Buffer.from(await mp3.arrayBuffer());
-        const base64Audio = buffer.toString('base64');
-  
-        // Create a new document in the Voice model with the binary data
-        const newVoice = await Voice.create({
-          userId: currentUser,
-          prompt: text,
-          audioData: base64Audio,
-        });
-  
-  
-        
-  
-        // Render the view and pass the filename of the saved speech file
-        res.render("swiss-knife-drive/swissKnifeDrive", { audio:`data:audio/mpeg;base64,${base64Audio}`,voiceId: newVoice._id});
-      } catch (error) {
-        console.error("OpenAI API error:", error);
-        res.render("errorPage", { message: "Error generating speech." }); // Replace 'errorPage' with your actual error view
-      }
-    } catch (err) {
-      console.error(err);
-      res.render("errorPage", { message: "Server error." }); // Replace 'errorPage' with your actual error view
-    }
-  });
-
-  router.post("/download-audio", async (req, res) => {
-    const voiceId = req.body.voiceId; // Get the voice ID from the request body
-  
-    try {
-      const voiceData = await Voice.findById(voiceId);
-      if (!voiceData) {
-        return res.status(404).send("Audio not found");
-      }
-  
-      const audioBuffer = Buffer.from(voiceData.audioData, "base64");
-  
-      res.setHeader("Content-Type", "audio/mpeg");
-      res.setHeader("Content-Disposition", `attachment; filename=audio_${voiceId}.mp3`);
-      res.send(audioBuffer);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send("Internal Server Error");
-    }
-  });
-  
-  
- 
-
-  const sharp = require('sharp');
-
-
-router.post('/dallEdit', upload.single('image'), isLoggedIn, async (req, res) => {
+router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
   try {
-    if (!req.file) {
-      return res.status(400).send("No image uploaded.");
+    const currentUser = await req.session.currentUser._id;
+    const { voice, text } = req.body;
+
+    try {
+      const mp3 = await openai.audio.speech.create({
+        model: "tts-1",
+        input: text,
+        voice: voice,
+      });
+
+      const buffer = Buffer.from(await mp3.arrayBuffer());
+      const base64Audio = buffer.toString("base64");
+console.log (buffer)
+      // Create a new document in the Voice model with the binary data
+      const newVoice = await Voice.create({
+        userId: currentUser,
+        prompt: text,
+        audioData: base64Audio,
+      });
+      
+      // Render the view and pass the filename of the saved speech file
+      res.render("swiss-knife-drive/swissKnifeDrive", {
+        audio: `data:audio/mpeg;base64,${base64Audio}`,
+        voiceId: newVoice._id,
+        
+      });
+    } catch (error) {
+      console.error("OpenAI API error:", error);
+      res.render("errorPage", { message: "Error generating speech." }); // Replace 'errorPage' with your actual error view
     }
-
-    const imageBuffer = req.file.buffer;
-    const { prompt, imageSize } = req.body;
-
-    // Convert the 'RGB' image to 'RGBA' format
-    const rgbaImageBuffer = await sharp(imageBuffer)
-      .ensureAlpha() // Ensure that the image has an alpha channel for transparency
-      .toFormat('png') // Convert the image to PNG format ('RGBA' format)
-      .toBuffer();
-      const imageFile = await OpenAI.toFile(rgbaImageBuffer);
-    // Get the dimensions of the converted image
-    const imageMetadata = await sharp(rgbaImageBuffer).metadata();
-    const imageWidth = imageMetadata.width;
-    const imageHeight = imageMetadata.height;
-  
-    // Create an empty PNG mask with the same dimensions in memory
-    const emptyMaskBuffer = await sharp({
-      create: {
-        width: imageWidth,
-        height: imageHeight,
-        channels: 4, // 4 channels for RGBA with transparency
-        background: { r: 0, g: 0, b: 0, alpha: 0 } // Fully transparent
-      }
-    }).png().toBuffer();
-    const empty = await OpenAI.toFile(emptyMaskBuffer);
-    const response = await openai.images.edit({
-      image: imageFile, // Use the converted 'RGBA' image
-    
-      model: "dall-e-2",
-      prompt: prompt,
-      n: 1,
-      size: imageSize || "1024x1024",
-      response_format: "url",
-    });
-
-    const imageUrl = response.data[0].url;
-    console.log("Edited image URL:", imageUrl);
-    res.json({ imageUrl });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).send("An error occurred.");
+  } catch (err) {
+    console.error(err);
+    res.render("errorPage", { message: "Server error." }); // Replace 'errorPage' with your actual error view
   }
 });
 
-  
-  
+router.post("/download-audio", async (req, res) => {
+  const voiceId = req.body.voiceId; // Get the voice ID from the request body
+
+  try {
+    const voiceData = await Voice.findById(voiceId);
+    if (!voiceData) {
+      return res.status(404).send("Audio not found");
+    }
+
+    const audioBuffer = Buffer.from(voiceData.audioData, "base64");
+
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=audio_${voiceId}.mp3`
+    );
+    res.send(audioBuffer);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+const sharp = require("sharp");
+const { response } = require("../app.js");
+
+router.post(
+  "/dallEdit",
+  upload.single("image"),
+  isLoggedIn,
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).send("No image uploaded.");
+      }
+
+      const imageBuffer = req.file.buffer;
+      const { prompt, imageSize } = req.body;
+
+      // Convert the 'RGB' image to 'RGBA' format
+      const rgbaImageBuffer = await sharp(imageBuffer)
+        .ensureAlpha() // Ensure that the image has an alpha channel for transparency
+        .toFormat("png") // Convert the image to PNG format ('RGBA' format)
+        .toBuffer();
+      const imageFile = await OpenAI.toFile(rgbaImageBuffer);
+      // Get the dimensions of the converted image
+      const imageMetadata = await sharp(rgbaImageBuffer).metadata();
+      const imageWidth = imageMetadata.width;
+      const imageHeight = imageMetadata.height;
+
+      // Create an empty PNG mask with the same dimensions in memory
+      const emptyMaskBuffer = await sharp({
+        create: {
+          width: imageWidth,
+          height: imageHeight,
+          channels: 4, // 4 channels for RGBA with transparency
+          background: { r: 0, g: 0, b: 0, alpha: 0 }, // Fully transparent
+        },
+      })
+        .png()
+        .toBuffer();
+      const empty = await OpenAI.toFile(emptyMaskBuffer);
+      const response = await openai.images.edit({
+        image: imageFile, // Use the converted 'RGBA' image
+
+        model: "dall-e-2",
+        prompt: prompt,
+        n: 1,
+        size: imageSize || "1024x1024",
+        response_format: "url",
+      });
+
+      const imageUrl = response.data[0].url;
+      console.log("Edited image URL:", imageUrl);
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).send("An error occurred.");
+    }
+  }
+);
+
+router.post("/chat", isLoggedIn, async (req, res) => {
+  const { prompt, innovation, enhancer } = req.body;
+  const dall =
+    "your name is Drive and you talk back as if you are a human and your reply in natural language  a prompt for a photo generation picture based on the users suggested message ";
+  console.log(prompt, innovation);
+  const inNum = +innovation;
+
+  const chat = new Chat(`${prompt}`, inNum);
+  const response = await chat.generate();
+  const update = response ? true : false;
+  console.log(response);
+
+  res.render("swiss-knife-drive/swissknifedrive", { response, update });
+});
 
 module.exports = router;

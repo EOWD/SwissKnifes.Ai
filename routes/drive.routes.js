@@ -22,7 +22,7 @@ router.get("/", isLoggedIn, async (req, res) => {
 
     //console.log(images.createdAt)
 
-    res.render("profile/knife-drive", { images });
+    res.render("swiss-knife-drive/swissKnifeDrive", { images });
   } catch (error) {
     console.log(error);
   }

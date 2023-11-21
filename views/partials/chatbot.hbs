@@ -1,0 +1,28 @@
+
+{{#if response}}
+
+<p>{{this.response}}</p>
+
+{{/if}}
+<form id="chatForm" action="/knifedrive/chat" method="POST">
+  <label for="prompt"class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prompt:</label>
+   <textarea id="prompt" name="prompt" rows="4" cols="50"  class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter a prompt..."></textarea>
+
+
+  <label for="size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Innovation:</label>
+  <select id="size" name="innovation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    <option value="0.2">LOW</option>
+    <option value="2">HIGH</option>
+  </select>
+    <label for="size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">prompt enhancer:</label>
+  <select id="size" name="enhancer" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    <option value="{{dall}}">image</option>
+    <option value="">story</option>
+  </select>
+
+
+  
+<div>
+   <button  type="submit" id="sendButton" class="py-2.5 px-5 me-2 mt-4 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center">Knife</button>
+</div>
+</form>

@@ -37,6 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     console.log("Generator element not found");
   }
+
+
+  
   function showOnlyOneSection(sectionToShow) {
     const sections = [chat, dall, vision, dallEdit, textSpeech];
     sections.forEach((section) => {

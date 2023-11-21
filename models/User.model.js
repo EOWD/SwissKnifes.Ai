@@ -23,10 +23,22 @@ const userSchema = new Schema(
     },
  
 
-    knifeDrive: [
+    images: [
       {
         type: Schema.Types.ObjectId,
-        ref: "knifeDrive",
+        ref: "ImageData",
+      },
+    ],
+    voiceMemo: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Voice",
+      },
+    ],
+    Vision: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Vision",
       },
     ],
   },
