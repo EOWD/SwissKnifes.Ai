@@ -1,55 +1,63 @@
 <h1>Thread Chat</h1>
+{{#if error}}
+    <p style="color: red">{{error}}</p>
+    <a href="/thread"><p>Reload Page</p></a>
+{{/if}}
 <div class="threadContainer">
     <div class="allThreads">
         <p>All open Threads</p>
         <ul>
             {{#each openThreads}}
-                <li><a href="/thread/{{this.threadId}}">{{this.threadId}}</a> - <a href="/thread/delete/{{this.threadId}}">Delete</a></li>
+                <li class="openThreadElement"><span class="usedAssistant">Assistant: {{this.assistantName}}</span><br> <a href="/thread/{{this.threadId}}">{{this.threadTitle}}</a> ------ <a href="/thread/delete/{{this.threadId}}">Del</a></li>
             {{/each}}
         </ul>
-        <br><hr><br><br>
-        <h3>Select your Assistant:</h3>
-        <form action="/thread/createThread" method="POST">
-            <select name="assistantId" id="assistant">
-                {{#each listAllAssistants}}
-                    <option value="{{this.assistantId}}">{{this.name}}</option>
-                {{/each}}
-            </select>
-            <br><br>
-            <label for="message">Message
-                <input type="text" name="message" id="message">
-            </label>
-            <button>Create Thread</button>
-        </form>
-        {{#if error}}
-            <p style="color: red">{{error}}</p>
-            <a href="/thread"><p>Reload Page</p></a>
-        {{/if}}
     </div>
     <div class="messagesContainer">
         <div class="messages">
-            <p>Thread Messages:</p>
-            <ul>
-                {{#each currentThreadMessages}}
-                    {{#if (eq this.role 'assistant')}}
-                        <li class="assistant-message"><b>Assistant:</b><br>{{this.content.[0].text.value}}</li>
-                    {{else if (eq this.role 'user')}}
-                        <li class="user-message"><b>User:</b><br>{{this.content.[0].text.value}}</li>
-                    {{/if}}
-                {{/each}}
-            </ul>
-            <form action="/thread/sendMessage" method="POST" class="form">
-            <label for="message">
-                <input type="text" name="message" id="message">
-                <input type="hidden" name="currentThread" value="{{currentThread}}">
-            </label>
-            <button>Send</button>
-        </form>
+            <div class="tab">
+                <button class="tablinks active" onclick="openCity(event, 'London')">{{currentThreadTitle.threadTitle}}</button>
+                <button class="tablinks" onclick="openCity(event, 'Paris')">+ New Thread</button>
+            </div>
+            <div class="tabContentCenter">
+                <div id="London" class="tabcontent" style="display: block;">
+                <p>Thread Messages:</p>
+                <ul>
+                    {{#each currentThreadMessages}}
+                        {{#if (eq this.role 'assistant')}}
+                            <li class="assistant-message"><b>Assistant:</b><br>{{this.content.[0].text.value}}</li>
+                        {{else if (eq this.role 'user')}}
+                            <li class="user-message"><b>User:</b><br>{{this.content.[0].text.value}}</li>
+                        {{/if}}
+                    {{/each}}
+                </ul>
+                <form action="/thread/sendMessage" method="POST" class="form">
+                <label for="message">
+                    <input type="text" name="message" id="message">
+                    <input type="hidden" name="currentThread" value="{{currentThread}}">
+                </label>
+                <button>Send</button>
+            </form>
+            </div>
+
+            <div id="Paris" class="tabcontent">
+                <h3>Select your Assistant:</h3>
+                <form action="/thread/createThread" method="POST">
+                    <select name="assistantId" id="assistant">
+                        {{#each listAllAssistants}}
+                            <option value="{{this.assistantId}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                    <br><br>
+                    <label for="message">Message
+                        <input type="text" name="message" id="message">
+                    </label>
+                    <button>Create Thread</button>
+                </form>
+            </div>
+            </div>            
         </div>
-        
     </div>
 </div>
-
 
 <style>
     .threadContainer {
@@ -70,8 +78,10 @@
         background-color: rgb(238, 238, 238);
         width: 70%;
         justify-content: space-around;
-        align-items: center;
         padding: 25px;
+        min-height: 450px;
+        max-height: 450px;
+        overflow-y: scroll;
     }
 
     .createAssistantForm {
@@ -82,6 +92,12 @@
         background-color: rgb(216, 216, 216);
     }
 
+    .messages {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
 
     .user-message {
         list-style: none;
@@ -93,4 +109,70 @@
         list-style: none;
         padding: 5px 0;
     }
+
+    .usedAssistant{
+        font-size: 12px;
+        font-style: italic;
+        color: rgb(173, 173, 173);
+    }
+
+    .openThreadElement {
+        padding: 5px 0;
+    }
+</style>
+
+
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+<style>
+.tab {
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    min-height: 50px;
+}
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border-top: none;
+}
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+.tabContentCenter {
+    display: flex;
+    justify-content: center;
+}
 </style>

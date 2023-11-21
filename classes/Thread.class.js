@@ -89,6 +89,10 @@ class Thread {
   async listThreads(userId) {
     return await ThreadModel.find({ userId });
   }
+  
+  async findThread(threadId) {
+    return await ThreadModel.findOne({ threadId });
+  }
 }
 
 module.exports = Thread;

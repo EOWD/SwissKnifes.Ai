@@ -6,6 +6,7 @@ const Thread = require("../models/Thread.model.js");
 const threadMessages = require("../models/ThreadMessages.model.js");
 const threadClass = require("../classes/Thread.class.js")
 const VanillaAssistant = require('../classes/Assistant.class.js');
+const threadSummarizer = require('../controller/threadSummarizer.js');
 
 const openaiApikey = process.env.OPENAI_API_KEY;
 const assistantInstance = new VanillaAssistant(openaiApikey);
@@ -34,10 +35,18 @@ router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
         userId = req.session.currentUser._id;
         const listAllAssistants = await assistantInstance.listAssistants();
         const currentThread = req.params.threadId
+        const currentThreadTitle = await thread.findThread(currentThread)
         const notReversedThreadMessages = await thread.listMessages(currentThread)
         const currentThreadMessages = notReversedThreadMessages.data.reverse();
-        const openThreads = await thread.listThreads(userId)
-        res.render("profile/thread", {currentThreadMessages, openThreads, currentThread, listAllAssistants})
+        let openThreads = await thread.listThreads(userId)
+
+        openThreads.forEach(thread => {
+            const assistant = listAllAssistants.find(assistant => assistant.assistantId === thread.assistantId);
+            if (assistant) {
+                thread.assistantName = assistant.name;
+            }
+        });
+        res.render("profile/thread", {currentThreadMessages, openThreads, currentThread, currentThreadTitle, listAllAssistants})
     } catch (error) {
         console.log(error)
     }
@@ -54,10 +63,14 @@ router.post("/thread/createThread", isLoggedIn, async (req, res, next) => {
         const createdThread = await thread.createThreadAndRun(assistantId, message);
         const threadId = createdThread.thread_id;
         const runId = createdThread.id;
+        let threadTitle = await threadSummarizer(message);
+        threadTitle = threadTitle.replace(/^"|"$/g, '');
+        console.log(threadTitle)
 
         const newThread = await Thread.create({
             threadId: createdThread.thread_id,
             assistantId: assistantId,
+            threadTitle: threadTitle,
             userId: userId,
         });
 
@@ -124,11 +137,11 @@ router.post("/thread/sendMessage", isLoggedIn, async (req, res, next) => {
 
         const runThread = await thread.runThread(threadId, threadDb.assistantId);
         let status = await thread.retrieveRun(threadId, runThread.id);
-        while (status.status != "completed") {
+        while (status.status !== "completed" && status.status !== "failed") {
             await sleep(500);
             status = await thread.retrieveRun(threadId, runThread.id);
-            console.log(status.status)
-        }
+            console.log(status.status);
+        }        
 
         if (status.status === 'completed') {
             try {
@@ -143,9 +156,7 @@ router.post("/thread/sendMessage", isLoggedIn, async (req, res, next) => {
             } catch (error) {
                 console.log(error)
             }
-        }
-
-        if (status.status === 'failed'){
+        } else if (status.status === 'failed'){
             res.render(`profile/thread`, {error: "API Req. failed"})
         }
 
