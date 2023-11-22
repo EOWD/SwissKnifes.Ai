@@ -74,14 +74,11 @@ router.post("/login", async (req, res, next) => {
       if (isMatch) {
         req.session.currentUser = user;
         console.log("match");
-        res.redirect("/user/profile");
+       return res.redirect("/user/profile");
       } else {
-        res.render("auth/login", { logInError });
+        return res.render("auth/login", { logInError });
       }
-    } else {
-      res.render("auth/login", { logInError });
-    }
-    const currentUser = await req.session.currentUser._id;
+    } 
 
   } catch (error) {
     console.log("log in error", error);

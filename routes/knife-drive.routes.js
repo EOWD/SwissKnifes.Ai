@@ -51,13 +51,14 @@ router.get("/", isLoggedIn, async (req, res, next) => {
     const currentUser = await req.session.currentUser._id;
     const imagesD = await User.findById(currentUser).populate("images");
     const visionD = await User.findById(currentUser).populate("visions");
-    
-    const voicesD = await User.findById(currentUser).populate("voiceMemo");
-    
-    
 
-    
-    res.render("swiss-knife-drive/swissKnifeDrive",{imagesD,visionD, voices: voicesD.voiceMemo });
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+
+    res.render("swiss-knife-drive/swissKnifeDrive", {
+      imagesD,
+      visionD,
+      voices: voicesD.voiceMemo,
+    });
   } catch {
     res.send;
   }
@@ -70,13 +71,12 @@ router.post("/knife", async (req, res, next) => {
     const { prompt, model, num, quality, size, style } = req.body;
     //console.log(model);
     const currentUser = await req.session.currentUser._id;
-    
+
     const imagesD = await User.findById(currentUser).populate("images");
     const visionD = await User.findById(currentUser).populate("visions");
-    
+
     const voicesD = await User.findById(currentUser).populate("voiceMemo");
-    
-    
+
     const number = +num;
 
     const Dall = new dall({ prompt, model, number, quality, size, style });
@@ -118,7 +118,9 @@ router.post("/knife", async (req, res, next) => {
       images,
       voice,
       vision,
-      imagesD,visionD, voices: voicesD.voiceMemo ,
+      imagesD,
+      visionD,
+      voices: voicesD.voiceMemo,
     });
 
     // const binaryData = Buffer.from(data, 'base64');
@@ -159,12 +161,9 @@ router.post(
       const currentUser = await req.session.currentUser._id;
       const imagesD = await User.findById(currentUser).populate("images");
       const visionD = await User.findById(currentUser).populate("visions");
-      
+
       const voicesD = await User.findById(currentUser).populate("voiceMemo");
-      
-      
-  
-      
+
       console.log(currentUser);
       let imageBuffer;
 
@@ -200,19 +199,22 @@ router.post(
       const mp3 = await openai.audio.speech.create({
         model: "tts-1",
         input: data,
-        voice: 'nova',
+        voice: "nova",
       });
 
       const buffer = Buffer.from(await mp3.arrayBuffer());
       const base64Audio = buffer.toString("base64");
       console.log(buffer);
 
-
       const status = data ? true : false;
 
       res.render("swiss-knife-drive/swissKnifeDrive", {
-        res: response.choices[0].message.content,imagesD,visionD, voices: voicesD.voiceMemo ,
-        data: `data:audio/mpeg;base64,${base64Audio}`,});
+        res: response.choices[0].message.content,
+        imagesD,
+        visionD,
+        voices: voicesD.voiceMemo,
+        data: `data:audio/mpeg;base64,${base64Audio}`,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
@@ -270,12 +272,9 @@ router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
     const currentUser = await req.session.currentUser._id;
     const imagesD = await User.findById(currentUser).populate("images");
     const visionD = await User.findById(currentUser).populate("visions");
-    
-    const voicesD = await User.findById(currentUser).populate("voiceMemo");
-    
-    
 
-    
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+
     const { voice, text } = req.body;
 
     try {
@@ -306,7 +305,10 @@ router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
       // Render the view and pass the filename of the saved speech file
       res.render("swiss-knife-drive/swissKnifeDrive", {
         audio: `data:audio/mpeg;base64,${base64Audio}`,
-        voiceId: newVoice._id,imagesD,visionD, voices: voicesD.voiceMemo,
+        voiceId: newVoice._id,
+        imagesD,
+        visionD,
+        voices: voicesD.voiceMemo,
       });
     } catch (error) {
       console.error("OpenAI API error:", error);
@@ -404,10 +406,9 @@ router.post("/chat", isLoggedIn, async (req, res) => {
   const currentUser = await req.session.currentUser._id;
   const imagesD = await User.findById(currentUser).populate("images");
   const visionD = await User.findById(currentUser).populate("visions");
-  
+
   const voicesD = await User.findById(currentUser).populate("voiceMemo");
-  
-  
+
   const { prompt, innovation, enhancer } = req.body;
   const dall =
     "your name is Drive and you talk back as if you are a human and your reply in natural language  a prompt for a photo generation picture based on the users suggested message ";
@@ -419,7 +420,13 @@ router.post("/chat", isLoggedIn, async (req, res) => {
   const update = response ? true : false;
   console.log(response);
 
-  res.render("swiss-knife-drive/swissknifedrive", { response, update,imagesD,visionD, voices: voicesD.voiceMemo, });
+  res.render("swiss-knife-drive/swissknifedrive", {
+    response,
+    update,
+    imagesD,
+    visionD,
+    voices: voicesD.voiceMemo,
+  });
 });
 router.post("/download-image", async (req, res) => {
   const imageId = req.body.imageUrl;
@@ -439,27 +446,24 @@ router.post("/download-image", async (req, res) => {
   } catch (error) {}
 });
 
-router.post("/erase/:id", isLoggedIn, async (req, res,next) => {
+router.post("/erase/:id", isLoggedIn, async (req, res, next) => {
   try {
     const currentUser = await req.session.currentUser._id;
     const imagesD = await User.findById(currentUser).populate("images");
     const visionD = await User.findById(currentUser).populate("visions");
-    
+
     const voicesD = await User.findById(currentUser).populate("voiceMemo");
     const imageId = req.params.id;
     console.log(imageId);
     // Perform the deletion
- 
-    const imgdelete= await ImageData.findByIdAndDelete(imageId) ;
+
+    const imgdelete = await ImageData.findByIdAndDelete(imageId);
     await Voice.findByIdAndDelete(imageId);
 
     // Redirect to the knife-drive page after deletion
-    res.redirect('/knifedrive/');
+    res.redirect("/knifedrive/");
   } catch (error) {
-
-    
     console.log(error);
-  
   }
 });
 
