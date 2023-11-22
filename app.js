@@ -40,8 +40,7 @@ app.use("/user", userRoutes);
 
 const dallRoutes = require("./routes/dall.routes");
 app.use("/dall", dallRoutes);
-const speechToText = require("./routes/speech->.routes");
-app.use('/speech', speechToText);
+
 const driveRoutes = require("./routes/drive.routes");
 app.use("/drive", driveRoutes);
 const vision = require("./routes/vision.routes");
