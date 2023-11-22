@@ -11,7 +11,18 @@ const isLoggedIn = (req, res, next) => {
     next();
   };
    
+  const loadingMiddleware = (req, res, next) => {
+   
+    res.locals.isLoading = true;
+
+    setTimeout(() => {
+        res.locals.isLoading = false;
+
+        next();
+    }, 2000); 
+};
   module.exports = {
     isLoggedIn,
-    isLoggedOut
+    isLoggedOut,
+    loadingMiddleware,
   };

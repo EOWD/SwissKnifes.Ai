@@ -1,0 +1,17 @@
+{{#each voices}}
+    
+    <audio controls>
+  <source src= "data:audio/mpeg;base64,{{this.audioData}}"type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<p>{{this.prompt}}</p>
+  <form action="/knifedrive/download-audio" method="POST">
+    <input type="hidden" name="voiceId" value="{{this._id}}" />
+    <button type="submit">download</button>
+  </form>
+  <form class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
+    <button type="submit">Delete</button>
+  </form>
+ 
+
+{{/each}}
