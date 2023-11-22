@@ -12,6 +12,7 @@ const User = require("../models/User.model");
 const Edit = require("../models/dallEdit.model");
 const ImageData = require("../models/dall.model");
 const Voice = require("../models/textToSpeech.model");
+const VElement = require("../models/vision.model");
 
 const { PassThrough } = require("stream");
 const router = express.Router();
@@ -48,9 +49,15 @@ router.get("/session", isLoggedIn, async (req, res, next) => {
 router.get("/", isLoggedIn, async (req, res, next) => {
   try {
     const currentUser = await req.session.currentUser._id;
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
+    
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    
+    
 
-    console.log(req.session.currentUser);
-    res.render("swiss-knife-drive/swissKnifeDrive");
+    
+    res.render("swiss-knife-drive/swissKnifeDrive",{imagesD,visionD, voices: voicesD.voiceMemo });
   } catch {
     res.send;
   }
@@ -63,7 +70,13 @@ router.post("/knife", async (req, res, next) => {
     const { prompt, model, num, quality, size, style } = req.body;
     //console.log(model);
     const currentUser = await req.session.currentUser._id;
-
+    
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
+    
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    
+    
     const number = +num;
 
     const Dall = new dall({ prompt, model, number, quality, size, style });
@@ -92,6 +105,9 @@ router.post("/knife", async (req, res, next) => {
     );
     const status = data ? true : false;
     await User.findById(currentUser).populate("images");
+    const images = await User.findById(currentUser).populate("images");
+    const vision = await User.findById(currentUser).populate("visions");
+    const voice = await User.findById(currentUser).populate("voiceMemo");
     res.render("swiss-knife-drive/swissKnifeDrive", {
       imageUrl: `data:image/png;base64,${data.b64_json}`,
       prompt,
@@ -99,6 +115,10 @@ router.post("/knife", async (req, res, next) => {
       newImageId,
       showSpinner: false,
       status,
+      images,
+      voice,
+      vision,
+      imagesD,visionD, voices: voicesD.voiceMemo ,
     });
 
     // const binaryData = Buffer.from(data, 'base64');
@@ -130,15 +150,29 @@ router.post("/knife", async (req, res, next) => {
     }
   }
 });
-router.post('/upload', upload.single("image1"), async (req, res) => {
-  try {
+router.post(
+  "/upload",
+  isLoggedIn,
+  upload.single("image1"),
+  async (req, res) => {
+    try {
+      const currentUser = await req.session.currentUser._id;
+      const imagesD = await User.findById(currentUser).populate("images");
+      const visionD = await User.findById(currentUser).populate("visions");
+      
+      const voicesD = await User.findById(currentUser).populate("voiceMemo");
+      
+      
+  
+      
+      console.log(currentUser);
       let imageBuffer;
 
       // Check if Multer successfully processed the file
       if (req.file) {
-          imageBuffer = req.file.buffer;
+        imageBuffer = req.file.buffer;
       } else {
-          return res.status(400).send("No file uploaded");
+        return res.status(400).send("No file uploaded");
       }
 
       const prompt = req.body.userPromptText;
@@ -146,15 +180,45 @@ router.post('/upload', upload.single("image1"), async (req, res) => {
 
       const vision = new Vision(prompt, base64);
       const response = await vision.generate();
+      const data = response.choices[0].message.content;
+
+      const vElem = await VElement.create({
+        userId: currentUser,
+        image: base64,
+        response: data,
+      });
+      try {
+        await User.updateOne(
+          { _id: currentUser },
+          { $push: { visions: vElem._id } }
+        );
+        await User.findById(currentUser).populate("visions");
+      } catch (e) {
+        console.log(e);
+      }
+
+      const mp3 = await openai.audio.speech.create({
+        model: "tts-1",
+        input: data,
+        voice: 'nova',
+      });
+
+      const buffer = Buffer.from(await mp3.arrayBuffer());
+      const base64Audio = buffer.toString("base64");
+      console.log(buffer);
+
+
+      const status = data ? true : false;
 
       res.render("swiss-knife-drive/swissKnifeDrive", {
-          res: response.choices[0].message.content,
-      });
-  } catch (error) {
+        res: response.choices[0].message.content,imagesD,visionD, voices: voicesD.voiceMemo ,
+        data: `data:audio/mpeg;base64,${base64Audio}`,});
+    } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
 /*router.post("/upload", upload.single("image1"), async (req, res) => {
   try {
@@ -204,6 +268,14 @@ router.post('/upload', upload.single("image1"), async (req, res) => {
 router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
   try {
     const currentUser = await req.session.currentUser._id;
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
+    
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    
+    
+
+    
     const { voice, text } = req.body;
 
     try {
@@ -215,19 +287,26 @@ router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
 
       const buffer = Buffer.from(await mp3.arrayBuffer());
       const base64Audio = buffer.toString("base64");
-console.log (buffer)
+      console.log(buffer);
       // Create a new document in the Voice model with the binary data
       const newVoice = await Voice.create({
         userId: currentUser,
         prompt: text,
         audioData: base64Audio,
       });
-      
+      try {
+        await User.updateOne(
+          { _id: currentUser },
+          { $push: { voiceMemo: newVoice._id } }
+        );
+        await User.findById(currentUser).populate("visions");
+      } catch (e) {
+        console.log(e);
+      }
       // Render the view and pass the filename of the saved speech file
       res.render("swiss-knife-drive/swissKnifeDrive", {
         audio: `data:audio/mpeg;base64,${base64Audio}`,
-        voiceId: newVoice._id,
-        
+        voiceId: newVoice._id,imagesD,visionD, voices: voicesD.voiceMemo,
       });
     } catch (error) {
       console.error("OpenAI API error:", error);
@@ -322,6 +401,13 @@ router.post(
 );
 
 router.post("/chat", isLoggedIn, async (req, res) => {
+  const currentUser = await req.session.currentUser._id;
+  const imagesD = await User.findById(currentUser).populate("images");
+  const visionD = await User.findById(currentUser).populate("visions");
+  
+  const voicesD = await User.findById(currentUser).populate("voiceMemo");
+  
+  
   const { prompt, innovation, enhancer } = req.body;
   const dall =
     "your name is Drive and you talk back as if you are a human and your reply in natural language  a prompt for a photo generation picture based on the users suggested message ";
@@ -333,7 +419,48 @@ router.post("/chat", isLoggedIn, async (req, res) => {
   const update = response ? true : false;
   console.log(response);
 
-  res.render("swiss-knife-drive/swissknifedrive", { response, update });
+  res.render("swiss-knife-drive/swissknifedrive", { response, update,imagesD,visionD, voices: voicesD.voiceMemo, });
+});
+router.post("/download-image", async (req, res) => {
+  const imageId = req.body.imageUrl;
+  // console.log(imageId);
+  //const image = imageId._id;
+  //console.log(image)
+  try {
+    const imageData = await ImageData.findById(imageId);
+    //console.log(imageData)
+    const bs64 = imageData.imageData;
+    console.log(bs64);
+    const url = Buffer.from(bs64, "base64");
+
+    res.setHeader("Content-Type", "image/png");
+    res.setHeader("Content-Disposition", `attachment; filename=${imageId}.png`);
+    res.send(url);
+  } catch (error) {}
+});
+
+router.post("/erase/:id", isLoggedIn, async (req, res,next) => {
+  try {
+    const currentUser = await req.session.currentUser._id;
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
+    
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    const imageId = req.params.id;
+    console.log(imageId);
+    // Perform the deletion
+ 
+    const imgdelete= await ImageData.findByIdAndDelete(imageId) ;
+    await Voice.findByIdAndDelete(imageId);
+
+    // Redirect to the knife-drive page after deletion
+    res.redirect('/knifedrive/');
+  } catch (error) {
+
+    
+    console.log(error);
+  
+  }
 });
 
 module.exports = router;

@@ -21,3 +21,16 @@
     <button type="submit">Submit</button>
 </form>
 </div>
+<div>
+    {{#if data}}
+    <audio controls>
+  <source src="{{audio}}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<form action="/knifedrive/download-audio" method="post">
+  <input type="hidden" name="voiceId" value="{{voiceId}}">
+  <button type="submit">Download Audio</button>
+</form>
+ 
+{{/if}}
+</div>

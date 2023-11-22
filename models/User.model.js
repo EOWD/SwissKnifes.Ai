@@ -35,10 +35,10 @@ const userSchema = new Schema(
         ref: "Voice",
       },
     ],
-    Vision: [
+    visions: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Vision",
+        ref: "VElement",
       },
     ],
   },

@@ -25,6 +25,6 @@ const visionSchema = new Schema(
   }
 );
 
-const Vision = model("Vision", visionSchema);
+const VElement = model("VElement", visionSchema);
 
-module.exports = Vision;
+module.exports = VElement;
