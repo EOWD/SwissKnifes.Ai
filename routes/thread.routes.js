@@ -36,6 +36,7 @@ router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
         const listAllAssistants = await assistantInstance.listAssistants();
         const currentThread = req.params.threadId
         const currentThreadTitle = await thread.findThread(currentThread)
+        const assistantName = await assistantInstance.retrieveAssistant(currentThreadTitle.assistantId)
         const notReversedThreadMessages = await thread.listMessages(currentThread)
         const currentThreadMessages = notReversedThreadMessages.data.reverse();
         let openThreads = await thread.listThreads(userId)
@@ -46,7 +47,15 @@ router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
                 thread.assistantName = assistant.name;
             }
         });
-        res.render("profile/thread", {currentThreadMessages, openThreads, currentThread, currentThreadTitle, listAllAssistants})
+        res.render("profile/thread", {
+            currentThreadMessages, 
+            openThreads, 
+            currentThread, 
+            currentThreadTitle, 
+            listAllAssistants, 
+            username: req.session.currentUser.username,
+            assistantName: assistantName.name
+        })
     } catch (error) {
         console.log(error)
     }
@@ -166,40 +175,6 @@ router.post("/thread/sendMessage", isLoggedIn, async (req, res, next) => {
     }
     console.log(req.body)
 })
-
-
-/* router.post("/thread/loadMessages", isLoggedIn, async (req, res, next) => {
-    try {
-        const threadId = req.body.thread_id;
-        const threadMessages = await thread.listMessages(threadId);
-
-        res.render("profile/thread", {threadMessages})
-    } catch (error) {
-        console.error('Error creating assistant:', error);
-        next(error);
-    }
-}) */
-
-
-/* router.post("/thread/runThread", isLoggedIn, async (req, res, next) => {
-    try {
-        const runThread = await thread.runThread(req.body.currentThread, req.body.assistantId);
-        let status = await thread.retrieveRun(req.body.currentThread, runThread.id);
-        while (status.status != "completed") {
-            await sleep(500);
-            status = await thread.retrieveRun(req.body.currentThread, runThread.id);
-            console.log(status.status)
-        }
-
-        if (status.status === 'completed') {
-            res.redirect(`/thread/${req.body.currentThread}`);
-        }
-
-    } catch (error) {
-        console.error('Error creating assistant:', error);
-        next(error);
-    }
-}) */
 
 
 router.get("/thread/delete/:id", isLoggedIn, async (req, res, next) => {

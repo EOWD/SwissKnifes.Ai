@@ -8,16 +8,11 @@
                 <li>{{this.name}} - <a href="/assistant/delete/{{this.assistantId}}">Delete</a> - <a href="/assistant/{{this.assistantId}}/edit">Edit</a></li>
                 
             {{/each}}
-            {{!-- <br>
-            OpenAI DB (should match above):
-            <br>
-            {{#each listOpenaiAssistants}}
-                <a href="/assistant/{{this.id}}"><li>{{this.name}}</a> - <a href="/assistant/delete/{{this.id}}">Delete</a></li>
-                
-            {{/each}} --}}
         </ul>
-        <br><br><br>
-        <form action="/assistant/newAssistant" method="POST" class="createAssistantForm">
+    </div>
+
+    <div class="threadContainer">
+        <form action="/assistant/newAssistant" method="POST" class="createAssistantForm" enctype="multipart/form-data">
         <h3 style="margin-top: 0px">Create new Assistant</h3>
             <label for="name">Name
                 <input type="text" name="name" id="name" required>
@@ -32,6 +27,7 @@
                 <select name="tools" id="tools" multiple>
                     <option value="code_interpreter">Code Interpreter</option>
                     <option value="retrieval">Retrieval</option>
+                    {{!-- <option value="function">Web Browsing</option> --}}
                 </select>
             </label>
             <label for="model">Model
@@ -40,34 +36,14 @@
                     <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo (1106)</option>
                 </select>
             </label>
-
+            <label for="file">Upload Files <br>(max. 20 files & 512 MB per file)<br><br>
+                <input type="file" id="file-upload" name="files" multiple>
+                <input type="text" id="purpose" name="purpose" value="assistants" hidden>
+                <div id="file-list-container"></div>
+            </label>
+            <br><br>
             <button>Create New Assistant</button>
         </form>
-    </div>
-
-    <div class="threadContainer">
-        <div class="assistantSelector">
-            <p>Select Assistant:</p>
-        </div>
-        <div class="threadMessages">
-            <p>Thread Messages:</p>
-            <ul>
-                {{#each threadMessages}}
-                    <li>{{this}}</li>
-                {{/each}}
-            </ul>
-            <form action="/assistant/sendMessage" method="POST" class="form">
-                <label for="message">
-                    <input type="text" name="message" id="message">
-                </label>
-                <select name="assistant_id" id="assistant_id">
-                    {{#each listAll}}
-                        <option value="{{this.assistantId}}">{{this.name}}</option>
-                    {{/each}}
-                </select>
-                <button>Send</button>
-            </form>
-        </div>
     </div>
 </div>
 
@@ -103,3 +79,36 @@
     }
 </style>
 <script src="/js/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var fileInput = document.getElementById('file-upload');
+    var fileListContainer = document.getElementById('file-list-container');
+
+    fileInput.addEventListener('change', function() {
+        updateFileList();
+    });
+
+    function updateFileList() {
+        fileListContainer.innerHTML = '';
+        Array.from(fileInput.files).forEach((file, index) => {
+            var fileDisplayEl = document.createElement('div');
+            fileDisplayEl.innerHTML = file.name + ' <button onclick="removeFile(' + index + ')" style="color: red;">x</button>';
+            fileListContainer.appendChild(fileDisplayEl);
+        });
+    }
+
+    window.removeFile = function(index) {
+        var files = Array.from(fileInput.files);
+        files.splice(index, 1);
+        fileInput.files = new FileListItems(files);
+        updateFileList();
+    };
+
+    function FileListItems(files) {
+        var b = new ClipboardEvent("").clipboardData || new DataTransfer();
+        for (var i = 0, len = files.length; i<len; i++) b.items.add(files[i]);
+        return b.files;
+    }
+});
+
+</script>

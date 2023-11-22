@@ -11,7 +11,7 @@ class VanillaAssistant {
     this.model = 'gpt-4-1106-preview'
   }
 
-  async createAssistant(assistantName, description, instructions, tools, model) {
+  async createAssistant(assistantName, description, instructions, tools, model, fileIds) {
     try {
       // Create the assistant with all available tools
       const response = await this.openaiApi.beta.assistants.create({
@@ -20,6 +20,7 @@ class VanillaAssistant {
         instructions: instructions,
         tools: tools,
         model: model,
+        file_ids: fileIds
       });
       console.log(response);
       return response;
@@ -42,24 +43,6 @@ class VanillaAssistant {
     const response = await this.openaiApi.beta.assistants.del(id);
     
     return(response)
-  }
-    
-  
-  async uploadFile(filePath) {
-    try {
-      // Read and upload the file content
-      const fileData = fs.readFileSync(filePath);
-      const fileContent = fileData.toString('base64');
-      
-      // Add file content to the conversation
-      await this.openaiApi.files.upload({
-        purpose: 'answers', // Change purpose as needed
-        file: fileContent,
-      });
-      console.log('File uploaded:', filePath);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
   }
 
   async retrieveAssistant(assistantId) {

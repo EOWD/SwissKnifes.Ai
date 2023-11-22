@@ -1,42 +1,99 @@
-<h1>Thread Chat</h1>
+{{!-- Big h1 headline with tailwind styling --}}
+<h1 class="text-3xl font-bold my-8">Thread Chat</h1>
 {{#if error}}
-    <p style="color: red">{{error}}</p>
-    <a href="/thread"><p>Reload Page</p></a>
+<p style="color: red">{{error}}</p>
+<a href="/thread">
+    <p>Reload Page</p>
+</a>
 {{/if}}
 <div class="threadContainer">
     <div class="allThreads">
         <p>All open Threads</p>
         <ul>
             {{#each openThreads}}
-                <li class="openThreadElement"><span class="usedAssistant">Assistant: {{this.assistantName}}</span><br> <a href="/thread/{{this.threadId}}">{{this.threadTitle}}</a> ------ <a href="/thread/delete/{{this.threadId}}">Del</a></li>
+            <li class="openThreadElement"><span class="usedAssistant">Assistant: {{this.assistantName}}</span><br> <a
+                    href="/thread/{{this.threadId}}">{{this.threadTitle}}</a> ------ <a
+                    href="/thread/delete/{{this.threadId}}">Del</a></li>
             {{/each}}
         </ul>
     </div>
     <div class="messagesContainer">
         <div class="messages">
             <div class="tab">
-                <button class="tablinks active" onclick="openCity(event, 'London')">{{currentThreadTitle.threadTitle}}</button>
+                <button class="tablinks active"
+                    onclick="openCity(event, 'London')">{{currentThreadTitle.threadTitle}}</button>
                 <button class="tablinks" onclick="openCity(event, 'Paris')">+ New Thread</button>
             </div>
-            <div class="tabContentCenter">
-                <div id="London" class="tabcontent" style="display: block;">
-                <p>Thread Messages:</p>
-                <ul>
-                    {{#each currentThreadMessages}}
-                        {{#if (eq this.role 'assistant')}}
-                            <li class="assistant-message"><b>Assistant:</b><br>{{this.content.[0].text.value}}</li>
-                        {{else if (eq this.role 'user')}}
-                            <li class="user-message"><b>User:</b><br>{{this.content.[0].text.value}}</li>
-                        {{/if}}
-                    {{/each}}
-                </ul>
-                <form action="/thread/sendMessage" method="POST" class="form">
-                <label for="message">
-                    <input type="text" name="message" id="message">
-                    <input type="hidden" name="currentThread" value="{{currentThread}}">
-                </label>
-                <button>Send</button>
-            </form>
+            <div class="tabcontent tabContentCenter" id="London">
+                <div class="flex flex-col flex-auto rounded-2xl bg-gray-100 h-full p-4">
+                    <div class="flex flex-col h-full overflow-x-auto mb-4">
+                        <div class="flex flex-col h-full">
+                            <div class="grid grid-cols-12 gap-y-2">
+                                {{#each currentThreadMessages}}
+                                    {{#if (eq this.role 'assistant')}}
+                                        <div class="col-start-1 col-end-8 p-3 rounded-lg">
+                                            <div class="flex flex-row items-center">
+                                                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-slate-500 flex-shrink-0">
+                                                    A
+                                                </div>
+                                                <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                                                    <div><b>{{../assistantName}}:</b><br>{{formatLineBreaks this.content.[0].text.value}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{else if (eq this.role 'user')}}
+                                        <div class="col-start-6 col-end-13 p-3 rounded-lg">
+                                            <div class="flex items-center justify-start flex-row-reverse">
+                                                <div
+                                                    class="flex items-center justify-center h-10 w-10 rounded-full bg-sky-500 flex-shrink-0">
+                                                    U
+                                                </div>
+                                                <div class="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                                                    <div><b>{{../username}}:</b><br>{{formatLineBreaks this.content.[0].text.value}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{/if}}
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4" style="position: sticky; z-index: 100; bottom: 0;">
+                        <div>
+                            <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex-grow ml-4">
+                            <div class="relative w-full">
+                                <form action="/thread/sendMessage" method="POST" class="form">
+                                    <label for="message">
+                                        <textarea  type="text" name="message" id="message" class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"></textarea>
+                                        <input type="hidden" name="currentThread" value="{{currentThread}}">
+                                    </label>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <button
+                                class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                                <span>Send</span>
+                                <span class="ml-2">
+                                    <svg class="w-4 h-4 transform rotate-45 -mt-px" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="Paris" class="tabcontent">
@@ -44,7 +101,7 @@
                 <form action="/thread/createThread" method="POST">
                     <select name="assistantId" id="assistant">
                         {{#each listAllAssistants}}
-                            <option value="{{this.assistantId}}">{{this.name}}</option>
+                        <option value="{{this.assistantId}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                     <br><br>
@@ -54,17 +111,75 @@
                     <button>Create Thread</button>
                 </form>
             </div>
-            </div>            
         </div>
     </div>
 </div>
+</div>
 
+<script>
+    function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+
+    // This function will run after the page content is loaded
+document.addEventListener("DOMContentLoaded", function() {
+    // Select the messages container
+    var messagesContainer = document.querySelector('.messagesContainer');
+
+    // Scroll to the bottom of the container
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    console.log(messagesContainer.scrollHeight);
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    var messageInput = document.getElementById('message');
+    var form = document.querySelector('.form'); // Adjust this selector to target your form
+
+    messageInput.addEventListener('keydown', function(event) {
+        // Check if CTRL (or Command on Mac) and ENTER keys are pressed
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+            // Prevent default behavior
+            event.preventDefault();
+
+            // Submit the form
+            form.submit();
+        }
+    });
+});
+
+
+
+</script>
 <style>
+    #message {
+        resize: none;
+        padding-top: 7px; /* Adjust this value */
+        padding-bottom: 5px; /* Adjust this value */
+        height: 40px; /* or whatever your desired height is */
+    }
+
+    ul:first-child {
+        display: flex;
+        gap: 30px;
+    }
+
     .threadContainer {
         display: flex;
         flex-direction: row;
         gap: 100px;
-        padding: 50px;
     }
 
     .allThreads {
@@ -75,12 +190,11 @@
 
     .messagesContainer {
         display: flex;
-        background-color: rgb(238, 238, 238);
         width: 70%;
         justify-content: space-around;
-        padding: 25px;
-        min-height: 450px;
-        max-height: 450px;
+        padding: 25px 0 25px 25px;
+        min-height: 700px;
+        max-height: 700px;
         overflow-y: scroll;
     }
 
@@ -110,7 +224,7 @@
         padding: 5px 0;
     }
 
-    .usedAssistant{
+    .usedAssistant {
         font-size: 12px;
         font-style: italic;
         color: rgb(173, 173, 173);
@@ -122,57 +236,44 @@
 </style>
 
 
-<script>
-function openCity(evt, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-</script>
 <style>
-.tab {
-    overflow: hidden;
-    display: flex;
-    justify-content: space-between;
-    min-height: 50px;
-}
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border-top: none;
-}
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-}
+    .tab {
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        min-height: 50px;
+    }
 
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
-}
+    .tabcontent {
+        display: none;
+        padding: 10px 0;
+        border-top: none;
+    }
 
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
-}
+    /* Style the buttons inside the tab */
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+    }
 
-.tabContentCenter {
-    display: flex;
-    justify-content: center;
-}
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+        background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+        background-color: #ccc;
+    }
+
+    .tabContentCenter {
+        display: flex;
+        justify-content: center;
+    }
 </style>

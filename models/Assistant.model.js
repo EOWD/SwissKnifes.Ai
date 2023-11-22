@@ -22,7 +22,12 @@ const assistantSchema = new Schema(
     instructions: {
       type: String,
       required: true
-    }
+    },
+    file_ids: [
+      {
+        type: String
+      }
+    ]
   },
   {
     timestamps: true
