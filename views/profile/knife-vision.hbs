@@ -1,0 +1,15 @@
+<h1>Vision Form</h1>
+<form action="/vision/upload" method="POST" enctype="multipart/form-data">
+    <!-- Assuming userPromptText is the key you want to send in the request body -->
+    <label for="userPromptText">User Prompt Text:</label>
+    <input type="text" id="userPromptText" name="userPromptText" required>
+
+    <!-- Updated input for Image 1 -->
+    <label for="image1">Image 1:</label>
+    <input type="file" id="image1" name="image1" accept="image/*" required>
+ <label for="image1">Take a Photo:</label>
+    <input type="file" id="image1" name="image1" accept="image/*" capture="camera" >
+
+
+    <button type="submit">Submit</button>
+</form>

@@ -1,29 +1,54 @@
-<!DOCTYPE html>
 <html lang="en">
 
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>{{appTitle}}</title>
-      <link rel="stylesheet" href="/stylesheets/style.css" />
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{appTitle}}</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
       <script src="https://cdn.tailwindcss.com"></script>
-   </head>
+  </head>
 
-   <body>
-<nav>
-   <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/auth/login">Login</a></li>
-      <li><a href="/user/profile">My profile</a></li>
-      <li><a href="/auth/signup">signup</a></li>
-      <br>
-      <li><a href="/assistant">assistants</a></li>
-      <li><a href="/thread">thread</a></li>
-</nav>
-      {{{body}}}
+  <body id="body">
+    <div class="grid-container">
 
-      <script src="/js/script.js"></script>
-   </body>
+      <div id="spinner" style="display: none;">LOADING</div>
+
+      <div class="top-nav">
+        <ul class="top-nav">
+
+          <li><a href="/auth/login">Login</a></li>
+          <li><a href="/user/profile">My profile</a></li>
+          <li><a href="/auth/signup">signup</a></li>
+
+        </ul>
+      </div>
+
+      <div class="side-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/knifedrive">knifedrive</a></li>
+				<li><a href="/assistant">assistants</a></li>
+      	<li><a href="/thread">thread</a></li>
+        <form id="logout-form" action="/user/logout" method="POST">
+    <button>Logout</button>
+  </form>
+        
+
+      </div>
+
+      <div class="main-content" >
+        {{{body}}}
+      </div>
+
+      <div class="footer">
+        Footer
+      </div>
+
+    </div>
+
+    <script src="/js/script.js"></script>
+    <script src="/js/camera.js"></script>
+  </body>
 
 </html>

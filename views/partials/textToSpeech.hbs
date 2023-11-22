@@ -1,0 +1,32 @@
+<form action="/knifedrive/text-to-speech" method="POST">
+    <!-- Input Field -->
+    <label for="inputField">Input Field:</label>
+    <input type="text" id="inputField" name="text" required>
+
+    <!-- Dropdown Menu -->
+    <label for="modelSelect">Choose a Model:</label>
+    <select id="modelSelect" name="voice">
+        <option value="alloy">Alloy</option>
+        <option value="echo">Echo</option>
+        <option value="fable">Fable</option>
+        <option value="onyx">Onyx</option>
+        <option value="nova">Nova</option>
+        <option value="shimmer">Shimmer</option>
+    </select>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+</form>
+<div>
+    {{#if audio}}
+    <audio controls>
+  <source src="{{audio}}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<form action="/knifedrive/download-audio" method="post">
+  <input type="hidden" name="voiceId" value="{{voiceId}}">
+  <button type="submit">Download Audio</button>
+</form>
+ 
+{{/if}}
+</div>

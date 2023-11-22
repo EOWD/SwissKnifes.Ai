@@ -1,0 +1,12 @@
+{{#each visionD.visions}}
+
+
+    <img src="data:image/png;base64,{{this.image}}" class="h-auto max-w-full rounded-lg" alt="image description"/>
+    <div style="">
+    <p  class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">Prompt: {{this.response}}</p >
+    </div>
+  <form class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
+    <button type="submit">Delete</button>
+  </form>
+
+{{/each}}

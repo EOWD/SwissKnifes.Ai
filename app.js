@@ -12,8 +12,9 @@ const express = require("express");
 // Handles the handlebars
 // https://www.npmjs.com/package/hbs
 const hbs = require("hbs");
-
+hbs.registerPartials("./views/partials/");
 const app = express();
+app.use(express.json({ limit: '50mb' }));
 
 require('./config/session.config')(app)
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
@@ -36,6 +37,20 @@ app.use("/auth", authRoutes);
 
 const userRoutes = require("./routes/user.routes");
 app.use("/user", userRoutes);
+
+const dallRoutes = require("./routes/dall.routes");
+app.use("/dall", dallRoutes);
+const speechToText = require("./routes/speech->.routes");
+app.use('/speech', speechToText);
+const driveRoutes = require("./routes/drive.routes");
+app.use("/drive", driveRoutes);
+const vision = require("./routes/vision.routes");
+app.use("/vision", vision);
+const knifeDrive = require("./routes/knife-drive.routes");
+app.use("/knifedrive", knifeDrive);
+
+
+
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);

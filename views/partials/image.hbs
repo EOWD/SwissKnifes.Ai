@@ -1,0 +1,12 @@
+{{#if imageUrl}}
+  <img src="{{this.imageUrl}}" />
+  <p> Prompt:{{this.prompt}} </p>
+  <p>size:{{this.size}}</p>
+  <form action="/dall/download-image" method="POST">
+    <input type="hidden" name="imageUrl" value="{{newImageId}}" />
+    <button type="submit">download</button>
+  </form>
+  <form action="">
+    <button type="submit">save to knifeDrive </button>
+  </form>
+{{/if}}
