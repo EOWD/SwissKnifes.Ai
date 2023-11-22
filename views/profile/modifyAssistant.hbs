@@ -1,0 +1,31 @@
+<h1>Modify Assistant</h1>
+<form action="/assistant/:id/edit" method="post">
+    <input type="hidden" name="id" value="{{asssistantData.id}}">
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="{{asssistantData.name}}"><br><br>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="5" cols="100">{{asssistantData.description}}</textarea><br><br>
+
+    <label for="instructions">Instructions:</label>
+    <textarea id="instructions" name="instructions" rows="10" cols="100">{{asssistantData.instructions}}</textarea><br><br>
+
+    <label for="tools">Tools:</label>
+    <select name="" id="" multiple>
+        {{#each asssistantData.tools}}
+            <option value="{{this}}">{{this.type}}</option>
+        {{/each}}
+    </select>
+    <br><br>
+    <label for="model">Model:</label>
+    <select name="model" id="model" required>
+        <option value="gpt-4-1106-preview">GPT 4 Preview (1106)</option>
+        <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo (1106)</option>
+    </select>
+    <br><br>
+    <label for="file_ids">File IDs:</label>
+    <input type="text" id="file_ids" name="file_ids" value="{{asssistantData.file_ids}}"><br><br>
+
+    <input type="submit" value="Submit">
+</form>
