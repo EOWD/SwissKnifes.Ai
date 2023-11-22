@@ -1,0 +1,114 @@
+<h1>Assistants</h1>
+
+<div class="assistantContainer">
+    <div class="allAssistants">
+        <p>All Assistants</p>
+        <ul>
+            {{#each listAll}}
+                <li>{{this.name}} - <a href="/assistant/delete/{{this.assistantId}}">Delete</a> - <a href="/assistant/{{this.assistantId}}/edit">Edit</a></li>
+                
+            {{/each}}
+        </ul>
+    </div>
+
+    <div class="threadContainer">
+        <form action="/assistant/newAssistant" method="POST" class="createAssistantForm" enctype="multipart/form-data">
+        <h3 style="margin-top: 0px">Create new Assistant</h3>
+            <label for="name">Name
+                <input type="text" name="name" id="name" required>
+            </label>
+            <label for="description">Description
+                <input type="text" name="description" id="description" required>
+            </label>
+            <label for="instructions">Instructions
+                <input type="text" name="instructions" id="instructions" required>
+            </label>
+            <label for="tools">Tools
+                <select name="tools" id="tools" multiple>
+                    <option value="code_interpreter">Code Interpreter</option>
+                    <option value="retrieval">Retrieval</option>
+                    {{!-- <option value="function">Web Browsing</option> --}}
+                </select>
+            </label>
+            <label for="model">Model
+                <select name="model" id="model" required>
+                    <option value="gpt-4-1106-preview">GPT 4 Preview (1106)</option>
+                    <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo (1106)</option>
+                </select>
+            </label>
+            <label for="file">Upload Files <br>(max. 20 files & 512 MB per file)<br><br>
+                <input type="file" id="file-upload" name="files" multiple>
+                <input type="text" id="purpose" name="purpose" value="assistants" hidden>
+                <div id="file-list-container"></div>
+            </label>
+            <br><br>
+            <button>Create New Assistant</button>
+        </form>
+    </div>
+</div>
+
+<a href="/assistant">Reload</a>
+<style>
+    .assistantContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 100px;
+        padding: 50px;
+    }
+
+    .allAssistants {
+        background-color: rgb(238, 238, 238);
+        padding: 20px 50px;
+        width: 30%;
+    }
+
+    .threadContainer {
+        display: flex;
+        background-color: rgb(238, 238, 238);
+        width: 70%;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .createAssistantForm {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        background-color: rgb(216, 216, 216);
+    }
+</style>
+<script src="/js/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var fileInput = document.getElementById('file-upload');
+    var fileListContainer = document.getElementById('file-list-container');
+
+    fileInput.addEventListener('change', function() {
+        updateFileList();
+    });
+
+    function updateFileList() {
+        fileListContainer.innerHTML = '';
+        Array.from(fileInput.files).forEach((file, index) => {
+            var fileDisplayEl = document.createElement('div');
+            fileDisplayEl.innerHTML = file.name + ' <button onclick="removeFile(' + index + ')" style="color: red;">x</button>';
+            fileListContainer.appendChild(fileDisplayEl);
+        });
+    }
+
+    window.removeFile = function(index) {
+        var files = Array.from(fileInput.files);
+        files.splice(index, 1);
+        fileInput.files = new FileListItems(files);
+        updateFileList();
+    };
+
+    function FileListItems(files) {
+        var b = new ClipboardEvent("").clipboardData || new DataTransfer();
+        for (var i = 0, len = files.length; i<len; i++) b.items.add(files[i]);
+        return b.files;
+    }
+});
+
+</script>
