@@ -4,6 +4,7 @@
     <p class="text-m italic font-medium leading-relaxed text-gray-900 dark:text-white">{{this.res}}</p>
 </blockquote>
 
+
 {{/if}}
 <form id="visionForm" action="/knifedrive/upload" method="POST" enctype="multipart/form-data">
     <label for="userPromptText">Ask</label>
@@ -24,7 +25,7 @@
 <div>
     {{#if data }}
     <audio controls>
-  <source src="{{audio}}" type="audio/mpeg">
+  <source src="{{this.data}}" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
 <form action="/knifedrive/download-audio" method="post">

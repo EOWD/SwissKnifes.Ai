@@ -1,7 +1,13 @@
+@import 'https://fonts.googleapis.com/css?family=Satisfy';
+@import 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css';
+@import 'https://fonts.googleapis.com/css?family=Inconsolata';
+
+
 body {
  
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: gray;
 }
 
 a {
@@ -74,6 +80,15 @@ h1 {
 #text-to-speech{
   display: none;
 }
+#gDrive{
+  display: none;
+}
+#vDrive{
+  display: none;
+}
+#iDrive{
+  display: none;
+}
 
 
 .element {
@@ -87,3 +102,7 @@ h1 {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
+
+
+
+

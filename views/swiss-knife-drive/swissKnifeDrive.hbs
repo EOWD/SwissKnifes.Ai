@@ -1,20 +1,24 @@
-<div id="lab">
-<div>
-    <button id="chat-Button">chatbot</button>
-    <button id="dall-Button">dall</button>
-    <button id="vision-Button">vision</button>
+<div class=" grid grid-cols-2 ">
+    <div>
+    <button id="chat-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">chatbot</button>
+    <button id="dall-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">dall</button>
+    <button id="vision-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">vision</button>
   
-    <button id="text-to-speech-Button">text-to-speech </button>
+    <button id="text-to-speech-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">text-to-speech </button>
 
 
 
-<div id="Knife-drive" style="position: absolute;">
+    <div id="Knife-drive" style="position: absolute;">
 
-<section class="lab-item " id="chatbot" {{#if update}} style="display:block" {{/if}}>chat {{>chatbot}}</section>
 
-<section class="lab-item " id="dall" {{#if status}} style="display:block" {{/if}}>
+
+
+
+    <section class="lab-item " id="chatbot" {{#if update}} style="display:block" {{/if}}>chat {{>chatbot}}</section>
+
+      <section class="lab-item " id="dall" {{#if status}} style="display:block" {{/if}}>
  {{>image}} {{>dall}}
-</section>
+    </section>
 
 <section class="lab-item " id="vision"{{#if vision}} style="display:block" {{/if}}>vision {{>vision}}</section>
 
@@ -29,10 +33,16 @@
 
 </div>
 
- <div class="lab-item drive ">
-  <div></div>
-    {{>images}}
-    {{>visionD}}
-   {{>speechD}}
+ <div class="">
+  <div>
+     <button id="gDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">gDrive</button>
+    <button id="iDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">iDrive</button>
+    <button id="vDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">viDrive</button>
+  
+  </div>
+<div  class="iDrive">{{>images}}</div>
+<div style="gDrive">{{>visionD}}</div>
+<div style="vDrive">{{>speechD}}</div>
+    
   </div>
   </div>
