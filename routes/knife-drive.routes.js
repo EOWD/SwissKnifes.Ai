@@ -419,16 +419,16 @@ router.post("/chat", isLoggedIn, async (req, res) => {
 
   const { prompt, innovation, enhancer } = req.body;
   const dall =
-    "your name is Drive and you talk back as if you are a human and your reply in natural language  a prompt for a photo generation picture based on the users suggested message ";
+    "your name is Drive and you talk back as if you are a human and you reply in natural language";
   console.log(prompt, innovation);
   const inNum = +innovation;
 
-  const chat = new Chat(`${prompt}`, inNum);
+  const chat = new Chat(`${dall}${prompt}`, inNum);
   const response = await chat.generate();
   const update = response ? true : false;
   
 
-  res.render("swiss-knife-drive/swissknifedrive", {
+  res.render("swiss-knife-drive/swissKnifeDrive", {
     response,
     update,
     imagesD,
