@@ -1,6 +1,4 @@
 body {
- 
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -11,7 +9,7 @@ a {
 h1 {
   color: 15px;
 }
-.grid-container {
+/* .grid-container {
   display: grid;
   grid-template-rows: auto 1fr auto; 
   grid-template-columns: 1fr 3fr; 
@@ -20,9 +18,9 @@ h1 {
       "side-nav main-content"
       "footer footer";
   height: 100vh; 
-}
+} */
 
-.top-nav {
+/* .top-nav {
   grid-area: top-nav;
   display: flex;
 
@@ -43,7 +41,7 @@ h1 {
 .footer {
   grid-area: footer;
   
-}
+} */
 #lab{
  
   display: grid;

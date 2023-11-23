@@ -8,27 +8,40 @@
   <title>{{appTitle}}</title>
   <link rel="stylesheet" href="/stylesheets/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
 </head>
 
-<body id="body">
+<body id="body" class="bg-slate-900 text-slate-50">
   <div class="grid-container">
 
     <div id="spinner" style="display: none;">LOADING</div>
 
-    {{> header}}
+    <header>
+      {{> header}}
+    </header>
 
-    <div class="main-content">
+    {{#if isLoggedIn}}
+
+    <div class="main-content pl-[270px] pt-[72px]">
+        <div class="container mx-auto p-4">
+            {{{body}}}
+        </div>
+    </div>
+
+    {{else}}
+
       {{{body}}}
-    </div>
 
-    <div class="footer">
-      Footer
-    </div>
+      {{> footer}}
+
+    {{/if}}
+
 
   </div>
 
   <script src="/js/script.js"></script>
   <script src="/js/camera.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
 </body>
 
 </html>

@@ -11,5 +11,9 @@ router.get("/", (req, res, next) => {
   res.render("index");
 });
 
+router.get("/documentation", isLoggedIn, (req, res, next) => {
+  res.render("documentation");
+});
+
 
 module.exports = router;

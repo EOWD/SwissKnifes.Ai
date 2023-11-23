@@ -12,6 +12,8 @@ const express = require("express");
 // Handles the handlebars
 // https://www.npmjs.com/package/hbs
 const hbs = require("hbs");
+hbs.registerPartials("./views/partials/Nav/");
+hbs.registerPartials("./views/partials/ThreadsAssistants/");
 hbs.registerPartials("./views/partials/");
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -29,6 +31,9 @@ app.locals.appTitle = `${capitalize(projectName)}`;
 const setUserStatus = (req, res, next) => {
     // Set a global variable accessible in all Handlebars templates
     res.locals.isLoggedIn = !!req.session.currentUser;
+    if (req.session.currentUser) {
+        res.locals.username = req.session.currentUser.username;
+    }
     next();
 };
 

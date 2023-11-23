@@ -1,0 +1,10 @@
+<div class="allThreads">
+    <p>All open Threads</p>
+    <ul>
+        {{#each openThreads}}
+        <li class="openThreadElement"><span class="usedAssistant">Assistant: {{this.assistantName}}</span><br> <a
+                href="/thread/{{this.threadId}}">{{this.threadTitle}}</a> ------ <a
+                href="/thread/delete/{{this.threadId}}">Del</a></li>
+        {{/each}}
+    </ul>
+</div>
