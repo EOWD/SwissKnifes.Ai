@@ -29,7 +29,7 @@ class VanillaAssistant {
     }
   }
 
-  //Listing the assistants that OpenAi has in its DB
+  //Listing the assistants that OpenAi has in its DB d
   async listOpenaiAssistants() {
     const myAssistants = await this.openaiApi.beta.assistants.list({
       order: "desc",
