@@ -26,6 +26,14 @@ const projectName = "MentorAi";
 
 app.locals.appTitle = `${capitalize(projectName)}`;
 
+const setUserStatus = (req, res, next) => {
+    // Set a global variable accessible in all Handlebars templates
+    res.locals.isLoggedIn = !!req.session.currentUser;
+    next();
+};
+
+app.use(setUserStatus);
+
 // 👇 Start handling routes here
 const indexRoutes = require("./routes/index.routes");
 const assistantRoutes = require("./routes/assistant.routes");
