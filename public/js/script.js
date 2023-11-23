@@ -9,6 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const dallEditButton = document.getElementById("dall-edit-Button");
   const textSpeechButton = document.getElementById("text-to-speech-Button");
 
+  const gDriveButton = document.getElementById("gDrive-Button");
+  const iDriveButton = document.getElementById("iDrive-Button");
+  const vDriveButton = document.getElementById("vDrive-Button");
+  
+  const gDrive = document.getElementById("gDrive");
+  const iDrive = document.getElementById("iDrive");
+  const vDrive = document.getElementById("vDrive");
+
   const chat = document.getElementById("chatbot");
   const dall = document.getElementById("dall");
   const vision = document.getElementById("vision");
@@ -47,6 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function showOnlyOneSection2(sectionToShow) {
+    const sections = [gDrive,iDrive,vDrive];
+    sections.forEach((section) => {
+      section.style.display = section === sectionToShow ? "block" : "none";
+    });
+  }
+
   chatButton.addEventListener("click", (event) => {
     event.preventDefault();
     showOnlyOneSection(chat);
@@ -67,6 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     showOnlyOneSection(dallEdit);
   });
+
+  gDriveButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    showOnlyOneSection2(gDrive);
+  });
+  iDriveButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    showOnlyOneSection2(iDrive);
+  });
+  vDriveButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    showOnlyOneSection2(vDrive);
+  });
+
 
   // Repeat for other buttons...
 

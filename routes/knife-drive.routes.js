@@ -457,8 +457,9 @@ router.post("/erase/:id", isLoggedIn, async (req, res, next) => {
     console.log(imageId);
     // Perform the deletion
 
-    const imgdelete = await ImageData.findByIdAndDelete(imageId);
+    await ImageData.findByIdAndDelete(imageId);
     await Voice.findByIdAndDelete(imageId);
+    await Vision.findByIdAndDelete(imageId);
 
     // Redirect to the knife-drive page after deletion
     res.redirect("/knifedrive/");
