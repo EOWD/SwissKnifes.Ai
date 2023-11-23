@@ -1,4 +1,5 @@
 {{#if imageUrl}}
+<div class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
   <img src="{{this.imageUrl}}" />
   <p> Prompt:{{this.prompt}} </p>
   <p>size:{{this.size}}</p>
@@ -8,5 +9,10 @@
   </form>
   <form action="">
     <button type="submit">save to knifeDrive </button>
-  </form>
+  </form></div>
 {{/if}}
+{{#if message}}
+<p>{{this.message}}</p>
+<button>Report bug</button>
+{{/if }}
+<br></br>

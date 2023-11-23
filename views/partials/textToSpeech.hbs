@@ -1,3 +1,17 @@
+<div>
+    {{#if audio}}
+    <audio controls>
+  <source src="{{audio}}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<form action="/knifedrive/download-audio" method="post">
+  <input type="hidden" name="voiceId" value="{{voiceId}}">
+  <button type="submit">Download Audio</button>
+</form>
+ 
+{{/if}}
+</div>
+
 <form action="/knifedrive/text-to-speech" method="POST">
     <!-- Input Field -->
     <label for="inputField">Input Field:</label>
@@ -15,8 +29,13 @@
     </select>
 
     <!-- Submit Button -->
-    <button type="submit">Submit</button>
+    <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit">Submit</button>
 </form>
+{{#if message}}
+<p>{{this.message}}</p>
+<button>Report bug</button>
+{{/if }}
+
 <div>
     {{#if audio}}
     <audio controls>

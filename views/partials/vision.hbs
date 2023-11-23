@@ -1,4 +1,5 @@
-<div class="flex">
+<div >
+  <div class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 {{#if res}}
 <blockquote class=" h-auto w-auto p-4 my-4 border-s-4 border-gray-300 bg-gray-50 dark:border-gray-500 dark:bg-gray-800">
     <p class="text-m italic font-medium leading-relaxed text-gray-900 dark:text-white">{{this.res}}</p>
@@ -6,6 +7,19 @@
 
 
 {{/if}}
+<div >
+    {{#if data }}
+    <audio controls>
+  <source src="{{this.data}}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<form action="/knifedrive/download-audio" method="post">
+  <input type="hidden" name="voiceId" value="{{voiceId}}">
+  <button type="submit">Download Audio</button>
+</form>
+ 
+{{/if}}
+</div></div>
 <form id="visionForm" action="/knifedrive/upload" method="POST" enctype="multipart/form-data">
     <label for="userPromptText">Ask</label>
     
@@ -19,19 +33,11 @@
     <label for="image1">Image 1:</label>
     <input type="file" id="image1" name="image1" accept="image/*">
 
-    <button type="submit">Submit</button>
+    <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit">Submit</button>
 </form>
 </div>
-<div>
-    {{#if data }}
-    <audio controls>
-  <source src="{{this.data}}" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
-<form action="/knifedrive/download-audio" method="post">
-  <input type="hidden" name="voiceId" value="{{voiceId}}">
-  <button type="submit">Download Audio</button>
-</form>
- 
-{{/if}}
-</div>
+{{#if message}}
+<p>{{this.message}}</p>
+<button>Report bug</button>
+{{/if }}
+<br>

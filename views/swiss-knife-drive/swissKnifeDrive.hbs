@@ -1,10 +1,9 @@
 <div class=" grid grid-cols-2 ">
     <div>
-    <button id="chat-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">chatbot</button>
-    <button id="dall-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">dall</button>
-    <button id="vision-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">vision</button>
-  
-    <button id="text-to-speech-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">text-to-speech </button>
+    <button id="chat-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Prompt Knife</button>
+    <button id="dall-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Image Knife</button>
+    <button id="vision-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">vision Knife</button>
+    <button id="text-to-speech-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Voice Knife</button>
 
 
 
@@ -14,19 +13,18 @@
 
 
 
-    <section class="lab-item " id="chatbot" {{#if update}} style="display:block" {{/if}}>chat {{>chatbot}}</section>
+    <section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="chatbot" {{#if update}} style="display:block" {{/if}}>
+    {{>chatbot}}</section>
 
-      <section class="lab-item " id="dall" {{#if status}} style="display:block" {{/if}}>
- {{>image}} {{>dall}}
+      <section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="dall" {{#if status}} style="display:block" {{/if}}>
+ <div class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">{{>image}}</div> {{>dall}}
     </section>
 
-<section class="lab-item " id="vision"{{#if vision}} style="display:block" {{/if}}>vision {{>vision}}</section>
+<section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="vision"{{#if vision}} style="display:block" {{/if}}>vision {{>vision}}</section>
 
-<section id="dall-edit">dall-edit {{>dallEdit}}</section>
 
-<section class="lab-item " id="transcript"{{#if this.update}} style="display:block" {{/if}}></section>
 
-<section class="lab-item " id="text-to-speech">text-to-speech {{>textToSpeech}} </section>
+<section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="text-to-speech">text-to-speech {{>textToSpeech}} </section>
 
 
    </div>
@@ -41,7 +39,7 @@
   
   </div>
 
-<section  id="iDrive" >{{>images}}</section>
+<section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"  id="iDrive" >{{>images}}</section>
 <section id="vDrive">{{>visionD}}</section>
 <section id="gDrive">{{>speechD}}</section>
     

@@ -131,7 +131,7 @@ router.post("/knife", async (req, res, next) => {
       error.message.includes("The size is not supported by this model.")
     ) {
       // Render a specific error message for the size not supported by the model
-      return res.render("profile/image-generator", {
+      return res.render("swiss-knife-drive/swissKnifeDrive", {
         message:
           "The selected size is not supported by the model. Please choose a different size.",
       });
@@ -140,11 +140,18 @@ router.post("/knife", async (req, res, next) => {
       error.message.includes("You must provide a prompt.")
     ) {
       // Render a specific error message for the size not supported by the model
-      return res.render("profile/image-generator", {
+      return res.render("swiss-knife-drive/swissKnifeDrive", {
         message: "You must provide a prompt.",
       });
       // For other errors, you can render a generic error message
-    } else {
+    }else if (
+      error.status === 429 &&
+    error.message.includes('You exceeded your current quota, please check your plan and billing details.')
+    ){
+
+      return res.render("swiss-knife-drive/swissKnifeDrive", {
+        message: "We are experiencing high demand, try again later.",})
+    }else {
       console.log(error);
       return res.render("profile/image-generator", {
         message: "Something is of, give it another shot",
