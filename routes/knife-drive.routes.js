@@ -410,6 +410,7 @@ router.post(
 );
 
 router.post("/chat", isLoggedIn, async (req, res) => {
+  try{
   const currentUser = await req.session.currentUser._id;
   const imagesD = await User.findById(currentUser).populate("images");
   const visionD = await User.findById(currentUser).populate("visions");
@@ -425,7 +426,7 @@ router.post("/chat", isLoggedIn, async (req, res) => {
   const chat = new Chat(`${prompt}`, inNum);
   const response = await chat.generate();
   const update = response ? true : false;
-  console.log(response);
+  
 
   res.render("swiss-knife-drive/swissknifedrive", {
     response,
@@ -434,6 +435,10 @@ router.post("/chat", isLoggedIn, async (req, res) => {
     visionD,
     voices: voicesD.voiceMemo,
   });
+
+}catch (err) {
+  console.log (err)
+}
 });
 router.post("/download-image", async (req, res) => {
   const imageId = req.body.imageUrl;
@@ -465,7 +470,9 @@ router.post("/erase/:id", isLoggedIn, async (req, res, next) => {
     // Perform the deletion
 
     await ImageData.findByIdAndDelete(imageId);
+
     await Voice.findByIdAndDelete(imageId);
+
     await Vision.findByIdAndDelete(imageId);
 
     // Redirect to the knife-drive page after deletion
