@@ -1,4 +1,4 @@
-<h1 class="text-3xl font-bold my-8">Thread Chat</h1>
+<h1 class="text-3xl font-bold mb-4">Thread Chat</h1>
 {{#if error}}
 <p style="color: red">{{error}}</p>
 <a href="/thread">
@@ -64,7 +64,28 @@ document.addEventListener("DOMContentLoaded", function() {
         resize: none;
         padding-top: 7px; /* Adjust this value */
         padding-bottom: 5px; /* Adjust this value */
-        height: 40px; /* or whatever your desired height is */
+    }
+
+    .chat-bar-shadow {
+        ;
+    }
+
+    .messagesContainer::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px #1e293b;
+        border-radius: 10px;
+        background-color: #1e293b;
+    }
+
+    .messagesContainer::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #334155;
+    }
+
+    /* And possibly the scrollbar itself */
+    .messagesContainer::-webkit-scrollbar {
+        width: 6px; /* or any width you prefer */
+        background-color: transparent;
     }
 
     .threadContainer {
@@ -74,8 +95,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     .allThreads {
-        background-color: rgb(238, 238, 238);
-        padding: 20px 50px;
         width: 30%;
     }
 
@@ -83,10 +102,10 @@ document.addEventListener("DOMContentLoaded", function() {
         display: flex;
         width: 70%;
         justify-content: space-around;
-        padding: 25px 0 25px 25px;
         min-height: 700px;
         max-height: 700px;
         overflow-y: scroll;
+        background-color: #1e293b;
     }
 
     .createAssistantForm {
@@ -102,6 +121,8 @@ document.addEventListener("DOMContentLoaded", function() {
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
+        background-color: #1e293b;
+        margin-top: auto;
     }
 
     .user-message {
@@ -137,8 +158,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     .tabcontent {
         display: none;
-        padding: 10px 0;
         border-top: none;
+        
     }
 
     /* Style the buttons inside the tab */

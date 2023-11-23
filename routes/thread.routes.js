@@ -26,7 +26,7 @@ router.get("/thread", isLoggedIn, async (req, res) => {
             res.render("profile/thread", {listAllAssistants})
         }
     } catch (error) {
-        console.log(error)
+        res.render("error", {error})
     }
 });
 
@@ -36,28 +36,33 @@ router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
         const listAllAssistants = await assistantInstance.listAssistants();
         const currentThread = req.params.threadId
         const currentThreadTitle = await thread.findThread(currentThread)
-        const assistantName = await assistantInstance.retrieveAssistant(currentThreadTitle.assistantId)
-        const notReversedThreadMessages = await thread.listMessages(currentThread)
-        const currentThreadMessages = notReversedThreadMessages.data.reverse();
-        let openThreads = await thread.listThreads(userId)
 
-        openThreads.forEach(thread => {
-            const assistant = listAllAssistants.find(assistant => assistant.assistantId === thread.assistantId);
-            if (assistant) {
-                thread.assistantName = assistant.name;
-            }
-        });
-        res.render("profile/thread", {
-            currentThreadMessages, 
-            openThreads, 
-            currentThread, 
-            currentThreadTitle, 
-            listAllAssistants, 
-            username: req.session.currentUser.username,
-            assistantName: assistantName.name
-        })
+        if(currentThreadTitle) {
+            const assistantName = await assistantInstance.retrieveAssistant(currentThreadTitle.assistantId)
+            const notReversedThreadMessages = await thread.listMessages(currentThread)
+            const currentThreadMessages = notReversedThreadMessages.data.reverse();
+            let openThreads = await thread.listThreads(userId)
+
+            openThreads.forEach(thread => {
+                const assistant = listAllAssistants.find(assistant => assistant.assistantId === thread.assistantId);
+                if (assistant) {
+                    thread.assistantName = assistant.name;
+                }
+            });
+            res.render("profile/thread", {
+                currentThreadMessages, 
+                openThreads, 
+                currentThread, 
+                currentThreadTitle, 
+                listAllAssistants, 
+                username: req.session.currentUser.username,
+                assistantName: assistantName.name
+            })
+        } else {
+            res.render("error", {error: "The Thread you are looking for, does not exist."})
+        }
     } catch (error) {
-        console.log(error)
+        res.render("error", {error: error})
     }
 });
 
@@ -114,7 +119,7 @@ router.post("/thread/createThread", isLoggedIn, async (req, res, next) => {
                 });
                 res.redirect(`/thread/${threadId}`);
             } catch (error) {
-                console.log(error)
+                res.render("error", {error})
             }
         }
 
@@ -122,8 +127,7 @@ router.post("/thread/createThread", isLoggedIn, async (req, res, next) => {
             res.render(`profile/thread`, {error: "API Req. failed"})
         }
     } catch (error) {
-        console.error('Error creating assistant:', error);
-        next(error);
+        res.render("error", {error})
     }
 })
 
@@ -163,17 +167,15 @@ router.post("/thread/sendMessage", isLoggedIn, async (req, res, next) => {
                 });
                 res.redirect(`/thread/${threadId}`);
             } catch (error) {
-                console.log(error)
+                res.render("error", {error})
             }
         } else if (status.status === 'failed'){
             res.render(`profile/thread`, {error: "API Req. failed"})
         }
 
     } catch (error) {
-        console.error('Error creating assistant:', error);
-        next(error);
+        res.render("error", {error})
     }
-    console.log(req.body)
 })
 
 
@@ -196,8 +198,7 @@ router.get("/thread/delete/:id", isLoggedIn, async (req, res, next) => {
             res.redirect('/thread');
         }
     } catch (error) {
-        console.error('Error deleting assistant:', error);
-        next(error);
+        res.render("error", {error})
     }
 })
 

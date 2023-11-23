@@ -36,36 +36,37 @@ router.get("/assistant", isLoggedIn, async (req, res) => {
         //console.log(listOpenaiAssistants)
         res.render("profile/assistant", {listAll: listAllAssistants, selectedAssistant, listOpenaiAssistants});
     } catch (error) {
-        console.log(error)
+        res.render("error", {error})
     }
 });
 
 router.post("/assistant/newAssistant", isLoggedIn, upload.array('files', 20), async (req, res, next) => {
     try {
-        const toolsFormatted = mapTools(req.body.tools)
+        const toolsFormatted = mapTools(req.body.tools);
 
-        const uploadPromises = req.files.map(file => {
-            const filePath = file.path;
-            
-            return filer.uploadFile(filePath, "assistants")
-                .then(uploadSingleFile => {
-            
-                // Delete file from temp_files folder after upload
-                fs.unlink(filePath, (err) => {
-                    if (err) console.error('Error deleting temp file:', err);
-                });
-            
-                return uploadSingleFile;
-                });
-        });
-        
-        const uploadedFiles = await Promise.all(uploadPromises);
-        const fileIds = uploadedFiles.map(file => file.id);
+        let fileIds = [];
+        if (req.files && req.files.length > 0) {
+            const uploadPromises = req.files.map(file => {
+                const filePath = file.path;
+                
+                return filer.uploadFile(filePath, "assistants")
+                    .then(uploadSingleFile => {
+                        // Delete file from temp_files folder after upload
+                        fs.unlink(filePath, (err) => {
+                            if (err) console.error('Error deleting temp file:', err);
+                        });
+                        return uploadSingleFile;
+                    });
+            });
 
-        // if one fails
-        for (const result of uploadedFiles) {
-            if (result.status === 'rejected') {
-              console.error('A file upload failed:', result.reason);
+            const uploadedFiles = await Promise.all(uploadPromises);
+            fileIds = uploadedFiles.map(file => file.id);
+
+            // if one fails
+            for (const result of uploadedFiles) {
+                if (result.status === 'rejected') {
+                    res.render("error", {error: result.reason})
+                }
             }
         }
 
@@ -83,8 +84,7 @@ router.post("/assistant/newAssistant", isLoggedIn, upload.array('files', 20), as
         const listAllAssistants = await assistantInstance.listAssistants();
         res.render("profile/assistant", { response: createAssistantResponse,  listAll: listAllAssistants });
     } catch (error) {
-        console.error('Error creating assistant:', error);
-        next(error);
+        res.render("error", {error})
     }
 })
 
@@ -99,7 +99,7 @@ router.get("/assistant/:id/edit", isLoggedIn, async (req, res) => {
 
         res.render("profile/modifyAssistant", {asssistantData});
     } catch (error) {
-        console.log(error)
+        res.render("error", {error})
     }
 });
 
@@ -127,8 +127,7 @@ router.get("/assistant/delete/:id", isLoggedIn, async (req, res, next) => {
 
         res.redirect('/assistant');
     } catch (error) {
-        console.error('Error deleting assistant:', error);
-        next(error);
+        res.render("error", {error})
     }
 })
 
