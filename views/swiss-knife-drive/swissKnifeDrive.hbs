@@ -1,5 +1,5 @@
-<div class=" grid grid-cols-2 ">
-    <div>
+<div class=" grid grid-cols-2 gap-4 ">
+    <div class="  messagesContainer w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" >
     <button id="chat-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Prompt Knife</button>
     <button id="dall-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Image Knife</button>
     <button id="vision-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">vision Knife</button>
@@ -7,41 +7,41 @@
 
 
 
-    <div id="Knife-drive" style="position: absolute;">
+    <div id="Knife-drive" >
 
 
 
 
 
-    <section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="chatbot" {{#if update}} style="display:block" {{/if}}>
+    <section class="w- p-6 mt-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="chatbot" {{#if update}} style="display:block" {{/if}}>
     {{>chatbot}}</section>
 
-      <section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="dall" {{#if status}} style="display:block" {{/if}}>
- <div class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">{{>image}}</div> {{>dall}}
+      <section class="w- p-6 mt-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="dall" {{#if status}} style="display:block" {{/if}}>
+ <div class="w- p-6 mt-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">{{>image}}</div> {{>dall}}
     </section>
 
-<section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="vision"{{#if vision}} style="display:block" {{/if}}>vision {{>vision}}</section>
+<section class="w- p-10 mt-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="vision"{{#if vision}} style="display:block" {{/if}}> {{>vision}}</section>
 
 
 
-<section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="text-to-speech">text-to-speech {{>textToSpeech}} </section>
+<section class="w- p-6 mt-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="text-to-speech">{{>textToSpeech}} </section>
 
 
    </div>
 
 </div>
 
- <div class="">
+ <div class=" scrollable-box  w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
   <div>
-     <button id="gDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">gDrive</button>
+     <button id="gDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">vDrive</button>
     <button id="iDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">iDrive</button>
-    <button id="vDrive-Button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">viDrive</button>
+    <button id="vDrive-Button" class="messagesContainer text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">viDrive</button>
   
   </div>
+<section style="overflow: hidden;" class=" scrollable-content  w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"  id="vDrive">{{>visionD}}</section>
 
-<section class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"  id="iDrive" >{{>images}}</section>
-<section id="vDrive">{{>visionD}}</section>
-<section id="gDrive">{{>speechD}}</section>
+<section style="overflow: hidden;" class=" messagesContainer w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"  id="iDrive" >{{>images}}</section>
+<section class="  messagesContainer w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" id="gDrive">{{>speechD}}</section>
     
   </div>
   </div>
