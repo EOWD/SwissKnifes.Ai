@@ -4,6 +4,7 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: gray;
+  
 }
 
 a {
@@ -99,6 +100,65 @@ h1 {
   -webkit-backdrop-filter: blur(5px);
 }
 
+.scrollable-box {
+  width: 40vw; /* Set your desired width */
+  height: 80vh; /* Set your desired height */
+  overflow: auto; /* Add scrollbars when content overflows */
+  border: 1px solid #ccc; /* Optional border for styling */
+}
+
+/* Style for the content inside the scrollable box */
+.scrollable-content {
+  padding: 10px;
+}
+
+.fixed-buttons {
+  position: absolute; /* Position relative to the scrollable box */
+  top: 10px; /* Adjust top and left values as needed */
+  left: 10px;
+}
 
 
+.photo-button {
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  position: absolute;
+}
+.circle {
+  position: absolute;
+  top: 12%;
+  left: 12%;
+  bottom: 12%;
+  right: 12%;
+  border-radius: 100%;
+  background-color: #ffffff;
+  opacity: 0;
+}
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  
+  border-radius: 100%;
+  border: 0.5em solid #ffffff;
+  opacity: 0.8;
+}
+.photo-button .circle, .photo-button .ring {
+  transition: all 0.25s;
+}
+.photo-button:hover .circle {
+  opacity: 1;
+}
+.photo-button:active .ring {
+  opacity: 1;
+}
+.photo-button:active .circle {
+  opacity: 0.5;
+}
 

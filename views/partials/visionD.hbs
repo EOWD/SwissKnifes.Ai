@@ -1,12 +1,23 @@
+
+
 {{#each visionD.visions}}
 
 
-    <img src="data:image/png;base64,{{this.image}}" class="h-auto max-w-full rounded-lg" alt="image description"/>
-    <div style="">
-    <p  class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">Prompt: {{this.response}}</p >
-    </div>
-  <form class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
-    <button type="submit">Delete</button>
+<div class=" justify-center mb-0 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <a href="#" class=" flex p-5 justify-center">
+        <img class="rounded-t-lg" src="data:image/png;base64,{{this.image}}" alt="" />
+    </a>
+    <div class="p-5">
+        <a href="#">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Idea</h5>
+        </a>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{this.response}}</p>
+
+         <form style="" class="mt-2 flex text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
+    <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit">Delete</button>
   </form>
+    </div>
+</div>
+
 
 {{/each}}

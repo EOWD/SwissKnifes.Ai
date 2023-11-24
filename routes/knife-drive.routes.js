@@ -104,7 +104,7 @@ router.post("/knife", async (req, res, next) => {
       { $push: { images: newImage._id } }
     );
     const status = data ? true : false;
-    await User.findById(currentUser).populate("images");
+
     const images = await User.findById(currentUser).populate("images");
     const vision = await User.findById(currentUser).populate("visions");
     const voice = await User.findById(currentUser).populate("voiceMemo");
@@ -126,35 +126,51 @@ router.post("/knife", async (req, res, next) => {
     // const binaryData = Buffer.from(data, 'base64');
     //console.log(binaryData)
   } catch (error) {
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
+
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    const status = true
     if (
       error.status === 400 &&
       error.message.includes("The size is not supported by this model.")
     ) {
+      
       // Render a specific error message for the size not supported by the model
       return res.render("swiss-knife-drive/swissKnifeDrive", {
         message:
-          "The selected size is not supported by the model. Please choose a different size.",
-      });
+          "The selected size is not supported by the model. Please choose a different size."
+          ,status, imagesD,
+          visionD,
+       
+          voices: voicesD.voiceMemo,});
     } else if (
       error.status === 400 &&
       error.message.includes("You must provide a prompt.")
     ) {
       // Render a specific error message for the size not supported by the model
       return res.render("swiss-knife-drive/swissKnifeDrive", {
-        message: "You must provide a prompt.",
+        message: "You must provide a prompt.",status, imagesD,
+        visionD,
+     
+        voices: voicesD.voiceMemo,
       });
       // For other errors, you can render a generic error message
-    }else if (
-      error.status === 429 &&
-    error.message.includes('You exceeded your current quota, please check your plan and billing details.')
-    ){
-
-      return res.render("swiss-knife-drive/swissKnifeDrive", {
-        message: "We are experiencing high demand, try again later.",})
-    }else {
+    } else if (error.code === 429 && error.message.includes('You exceeded your current quota, please check your plan and billing details.')) {
+      // Handle the RateLimitError
+      return res.render('swiss-knife-drive/swissKnifeDrive', {
+        message: 'You exceeded your current quota. Please check your plan and billing details.',status, imagesD,
+        visionD,
+     
+        voices: voicesD.voiceMemo,
+      });
+    } else {
       console.log(error);
-      return res.render("profile/image-generator", {
-        message: "Something is of, give it another shot",
+      return res.render("swiss-knife-drive/swissKnifeDrive", {
+        message: "Something is of, give it another shot",status, imagesD,
+        visionD,
+     
+        voices: voicesD.voiceMemo,
       });
     }
   }
@@ -166,10 +182,6 @@ router.post(
   async (req, res) => {
     try {
       const currentUser = await req.session.currentUser._id;
-      const imagesD = await User.findById(currentUser).populate("images");
-      const visionD = await User.findById(currentUser).populate("visions");
-
-      const voicesD = await User.findById(currentUser).populate("voiceMemo");
 
       console.log(currentUser);
       let imageBuffer;
@@ -210,21 +222,46 @@ router.post(
       });
 
       const buffer = Buffer.from(await mp3.arrayBuffer());
-      const base64Audio = buffer.toString("base64");
+      const base64Audio = await buffer.toString("base64");
       console.log(buffer);
 
-      const status = data ? true : false;
+      const visionUp = base64Audio ? true : false;
+      const imagesD = await User.findById(currentUser).populate("images");
+      const visionD = await User.findById(currentUser).populate("visions");
 
+      const voicesD = await User.findById(currentUser).populate("voiceMemo");
       res.render("swiss-knife-drive/swissKnifeDrive", {
         res: response.choices[0].message.content,
         imagesD,
         visionD,
+        visionUp,
         voices: voicesD.voiceMemo,
         data: `data:audio/mpeg;base64,${base64Audio}`,
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+    } catch (err) {
+      const imagesD = await User.findById(currentUser).populate("images");
+      const visionD = await User.findById(currentUser).populate("visions");
+
+      const voicesD = await User.findById(currentUser).populate("voiceMemo");
+      const visionUp = true
+      console.log(err);
+      if (err.status === 429 && err.message.includes('You exceeded your current quota, please check your plan and billing details.')) {
+        // Handle the RateLimitError
+        return res.render('swiss-knife-drive/swissKnifeDrive', {
+          message: 'We are currently experiencing hight demand, try again later.',visionUp ,   imagesD,
+          visionD,
+       
+          voices: voicesD.voiceMemo,
+        });
+      } else {
+        console.log(err);
+        return res.render("swiss-knife-drive/swissKnifeDrive", {
+          message: "We are currently experiencing hight demand, try again later.",visionUp, imagesD,
+          visionD,
+       
+          voices: voicesD.voiceMemo,
+        });
+      }
     }
   }
 );
@@ -283,7 +320,7 @@ router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
     const voicesD = await User.findById(currentUser).populate("voiceMemo");
 
     const { voice, text } = req.body;
-
+console.log (text)
     try {
       const mp3 = await openai.audio.speech.create({
         model: "tts-1",
@@ -309,6 +346,7 @@ router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
       } catch (e) {
         console.log(e);
       }
+      const statusT = base64Audio? true : false;
       // Render the view and pass the filename of the saved speech file
       res.render("swiss-knife-drive/swissKnifeDrive", {
         audio: `data:audio/mpeg;base64,${base64Audio}`,
@@ -316,14 +354,53 @@ router.post("/text-to-speech", isLoggedIn, async (req, res, next) => {
         imagesD,
         visionD,
         voices: voicesD.voiceMemo,
+        statusT,
       });
-    } catch (error) {
-      console.error("OpenAI API error:", error);
-      res.render("errorPage", { message: "Error generating speech." }); // Replace 'errorPage' with your actual error view
+    } catch (err) {
+      const imagesD = await User.findById(currentUser).populate("images");
+      const visionD = await User.findById(currentUser).populate("visions");
+  
+      const voicesD = await User.findById(currentUser).populate("voiceMemo");
+      const statusT=true
+      console.log(err);
+      if (err.status === 429 && err.message.includes('You exceeded your current quota, please check your plan and billing details.')) {
+        // Handle the RateLimitError
+        return res.render('swiss-knife-drive/swissKnifeDrive', {
+          message: 'We are currently experiencing hight demand, try again later.',statusT,  imagesD,
+          visionD,
+          voices: voicesD.voiceMemo,
+        });
+      } else {
+        console.log(err);
+        return res.render("swiss-knife-drive/swissKnifeDrive", {
+          message: "We are currently experiencing hight demand, try again later.",statusT,  imagesD,
+          visionD,
+          voices: voicesD.voiceMemo,
+        });
+      }
     }
   } catch (err) {
-    console.error(err);
-    res.render("errorPage", { message: "Server error." }); // Replace 'errorPage' with your actual error view
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
+
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    const statusT=true
+    console.log(err);
+    if (err.status === 429 && err.message.includes('You exceeded your current quota, please check your plan and billing details.')) {
+      // Handle the RateLimitError
+      return res.render('swiss-knife-drive/swissKnifeDrive', {
+        message: 'We are currently experiencing hight demand, try again later.',statusT,  imagesD,
+        visionD,
+        voices: voicesD.voiceMemo,
+      });
+    } else {
+      console.log(err);
+      return res.render("swiss-knife-drive/swissKnifeDrive", {
+        message: "We are currently experiencing hight demand, try again later.",statusT,  imagesD,
+        visionD,
+        voices: voicesD.voiceMemo,
+      });
+    }
   }
 });
 
@@ -410,35 +487,53 @@ router.post(
 );
 
 router.post("/chat", isLoggedIn, async (req, res) => {
-  try{
-  const currentUser = await req.session.currentUser._id;
-  const imagesD = await User.findById(currentUser).populate("images");
-  const visionD = await User.findById(currentUser).populate("visions");
+  try {
+    const currentUser = await req.session.currentUser._id;
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
 
-  const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
 
-  const { prompt, innovation, enhancer } = req.body;
-  const dall =
-    "your name is Drive and you talk back as if you are a human and you reply in natural language";
-  console.log(prompt, innovation);
-  const inNum = +innovation;
+    const { prompt, innovation, enhancer } = req.body;
+    const dall =
+      "your name is Drive and you talk back as if you are a human and you reply in natural language";
+    console.log(prompt, innovation);
+    const inNum = +innovation;
 
-  const chat = new Chat(`${dall}${prompt}`, inNum);
-  const response = await chat.generate();
-  const update = response ? true : false;
-  
+    const chat = new Chat(`${dall}${prompt}`, inNum);
+    const response = await chat.generate();
+    const update = response ? true : false;
 
-  res.render("swiss-knife-drive/swissKnifeDrive", {
-    response,
-    update,
-    imagesD,
-    visionD,
-    voices: voicesD.voiceMemo,
-  });
+    res.render("swiss-knife-drive/swissKnifeDrive", {
+      response,
+      update,
+      imagesD,
+      visionD,
+      voices: voicesD.voiceMemo,
+    });
+  } catch (err) {
+    const imagesD = await User.findById(currentUser).populate("images");
+    const visionD = await User.findById(currentUser).populate("visions");
 
-}catch (err) {
-  console.log (err)
-}
+    const voicesD = await User.findById(currentUser).populate("voiceMemo");
+    const update =true
+    console.log(err);
+    if (err.status === 429 && err.message.includes('You exceeded your current quota, please check your plan and billing details.')) {
+      // Handle the RateLimitError
+      return res.render('swiss-knife-drive/swissKnifeDrive', {
+        message: 'We are currently experiencing hight demand, try again later.',update,    imagesD,
+        visionD,
+        voices: voicesD.voiceMemo,
+      });
+    } else {
+      console.log(err);
+      return res.render("swiss-knife-drive/swissKnifeDrive", {
+        message: "We are currently experiencing hight demand, try again later.",update,    imagesD,
+        visionD,
+        voices: voicesD.voiceMemo,
+      });
+    }
+  }
 });
 router.post("/download-image", async (req, res) => {
   const imageId = req.body.imageUrl;
@@ -473,10 +568,12 @@ router.post("/erase/:id", isLoggedIn, async (req, res, next) => {
 
     await Voice.findByIdAndDelete(imageId);
 
-    await Vision.findByIdAndDelete(imageId);
+    await VElement.findByIdAndDelete(imageId);
 
     // Redirect to the knife-drive page after deletion
-    res.redirect("/knifedrive/");
+    res.render("swiss-knife-drive/swissKnifeDrive",{  imagesD,
+      visionD,
+      voices: voicesD.voiceMemo,});
   } catch (error) {
     console.log(error);
   }
