@@ -1,8 +1,13 @@
 
 
-<div class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+<div class="w- mb-4 p-6 mt-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 <p>{{this.response}}</p>
+{{#if message}}
+<p>{{this.message}}</p>
+<button>Report bug</button>
+{{/if }}
 </div>
+
 
 <form id="chatForm" action="/knifedrive/chat" method="POST">
   <label for="prompt"class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prompt:</label>
