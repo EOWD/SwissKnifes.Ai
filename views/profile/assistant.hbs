@@ -21,24 +21,25 @@
         <form action="/assistant/newAssistant" method="POST" class="createAssistantForm text-black w-7/12" enctype="multipart/form-data">
         <h3 style="margin-top: 0px">Create new Assistant</h3>
             <div class="sideBySideContainer flex w-full gap-3">
-                <div class="leftSide flex-grow">
+                <div class="leftSide flex-grow w-1/2">
                     <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white pt-2">Assistant Name</label>
                     <input type="text" name="name" id="name" placeholder="Elon Musk" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                     <label for="description" class="block text-sm font-medium text-gray-900 dark:text-white" style="padding-top: 15px;">Description</label>
                     <input type="text" name="description" id="description" placeholder="A Elon Musk Assistant" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                    
+                    <label for="tools" class="block text-sm mt-4 font-medium text-gray-900 dark:text-white overflow-hidden">Tools</label>
+                    <select multiple id="tools" class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 overflow-hidden" style="height: 100px;">
+                        <option value="code_interpreter">Code Interpreter</option>
+                        <option value="retrieval">Retrieval</option>
+                        <option value="function" disabled>Web Browsing (Coming Soon)</option>
+                    </select>
                 </div>
-                <div class="rigthSide flex-grow">
+                <div class="rigthSide flex-grow w-1/2">
                     <label for="instructions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >Instructions</label>
                     <textarea id="instructions" style="height: 119px;" placeholder="You are Elon Musk..." class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
                 </div>
             </div>
-            <label for="tools">Tools
-                <select name="tools" id="tools" multiple>
-                    <option value="code_interpreter">Code Interpreter</option>
-                    <option value="retrieval">Retrieval</option>
-                    <option value="function" disabled>Web Browsing (Coming Soon)</option>
-                </select>
-            </label>
+            
             <label for="model">Model
                 <select name="model" id="model" required>
                     <option value="gpt-4-1106-preview">GPT 4 Preview (1106)</option>
@@ -56,7 +57,6 @@
     </div>
 </div>
 
-<a href="/assistant">Reload</a>
 <style>
     .assistantContainer {
         display: flex;
