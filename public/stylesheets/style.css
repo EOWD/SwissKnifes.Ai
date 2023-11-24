@@ -4,7 +4,7 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: gray;
-  
+
 }
 
 a {
@@ -106,10 +106,11 @@ h1 {
 }
 
 .scrollable-box {
-  width: 40vw; /* Set your desired width */
+  width: 100%; /* Set your desired width */
   height: 80vh; /* Set your desired height */
   overflow: auto; /* Add scrollbars when content overflows */
   border: 1px solid #ccc; /* Optional border for styling */
+  overflow: none;
 }
 
 /* Style for the content inside the scrollable box */

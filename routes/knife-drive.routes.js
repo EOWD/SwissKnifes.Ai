@@ -181,7 +181,7 @@ router.post(
   upload.single("image1"),
   async (req, res) => {
     try {
-      const currentUser = await req.session.currentUser._id;
+      var currentUser = await req.session.currentUser._id;
 
       console.log(currentUser);
       let imageBuffer;
@@ -193,7 +193,7 @@ router.post(
         return res.status(400).send("No file uploaded");
       }
 
-      const prompt = req.body.userPromptText;
+      const prompt = req.body.text;
       const base64 = imageBuffer.toString("base64");
 
       const vision = new Vision(prompt, base64);
@@ -239,14 +239,15 @@ router.post(
         data: `data:audio/mpeg;base64,${base64Audio}`,
       });
     } catch (err) {
-      const imagesD = await User.findById(currentUser).populate("images");
-      const visionD = await User.findById(currentUser).populate("visions");
 
-      const voicesD = await User.findById(currentUser).populate("voiceMemo");
       const visionUp = true
       console.log(err);
       if (err.status === 429 && err.message.includes('You exceeded your current quota, please check your plan and billing details.')) {
         // Handle the RateLimitError
+        const imagesD = await User.findById(currentUser).populate("images");
+        const visionD = await User.findById(currentUser).populate("visions");
+  
+        const voicesD = await User.findById(currentUser).populate("voiceMemo");
         return res.render('swiss-knife-drive/swissKnifeDrive', {
           message: 'We are currently experiencing hight demand, try again later.',visionUp ,   imagesD,
           visionD,
@@ -255,6 +256,10 @@ router.post(
         });
       } else {
         console.log(err);
+        const imagesD = await User.findById(currentUser).populate("images");
+        const visionD = await User.findById(currentUser).populate("visions");
+  
+        const voicesD = await User.findById(currentUser).populate("voiceMemo");
         return res.render("swiss-knife-drive/swissKnifeDrive", {
           message: "We are currently experiencing hight demand, try again later.",visionUp, imagesD,
           visionD,
