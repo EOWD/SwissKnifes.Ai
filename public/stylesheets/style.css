@@ -42,7 +42,7 @@ h1 {
  
  
 }
-
+backgroundrive{}
 .main-content {
   grid-area: main-content;
  
@@ -167,4 +167,5 @@ h1 {
 .photo-button:active .circle {
   opacity: 0.5;
 }
+
 

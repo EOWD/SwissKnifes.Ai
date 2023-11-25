@@ -7,7 +7,7 @@
 <button>Report bug</button>
 {{/if }}
     {{#if audio}}
-    <audio controls>
+    <audio  autoplay>
   <source src="{{audio}}" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
@@ -39,9 +39,9 @@
 
        <div class="flex items-center justify-between px-3 py-2 border-t dark:border-gray-600">
           
-           <div class="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
+           <div class="flex justify-between ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
       <label for="modelSelect">Choose a Model:</label>
-    <select id="modelSelect" name="voice">
+    <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="modelSelect" name="voice">
         <option value="alloy">Alloy</option>
         <option value="echo">Echo</option>
         <option value="fable">Fable</option>

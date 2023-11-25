@@ -1,17 +1,29 @@
+<section style="display: flex; flex-direction:column-reverse">
 {{#each voices}}
-    
-    <audio controls>
+
+    <div style="" class="  mb-7 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div style="display: flex; justify-content:space-between; align-content:center">
+    <audio controls class="  m-10 text-sm text-center text-gray-500 dark:text-gray-400">
   <source src= "data:audio/mpeg;base64,{{this.audioData}}"type="audio/mpeg">
   Your browser does not support the audio element.
-</audio>
-<p>{{this.prompt}}</p>
-  <form action="/knifedrive/download-audio" method="POST">
+</audio></div>
+<div>
+
+<div style="display: flex; justify-content:space-between; align-content:center">
+  <p class="sourceText m-5" style="display: none;">{{this.prompt}}</p>
+  <button class="patch"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+</svg> Prompt Knife </button>
+  <form class="mt-2 m-5 text-sm text-center text-gray-500 dark:text-gray-400" method="POST">
     <input type="hidden" name="voiceId" value="{{this._id}}" />
     <button type="submit">download</button>
   </form>
-  <form class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
+  
+  <form class="mt-2 m-5 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
     <button type="submit">Delete</button>
   </form>
- 
-
-{{/each}}
+  
+   
+   </div>
+</div>
+{{/each}}</section>

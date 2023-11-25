@@ -1,4 +1,4 @@
-<div class=" grid grid-cols-2 gap-4 mt-1 ">
+<div class=" grid grid-cols-2 gap-4 mt-1 bgdrive " style="backgroun">
     <div class=" scrollable-box w- p-6 mt-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" >
       <div style="display: flex;">
         <div>    <button id="chat-Button"  class="pl-2 pr-2 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-3 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Prompt Knife</button>
@@ -81,3 +81,16 @@
     
   </div>
   </div>
+
+<script>
+    var patchButtons = document.querySelectorAll(".patch");
+
+    patchButtons.forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            var textToCopy = event.target.closest("div").querySelector(".sourceText").innerText;
+
+           
+            document.querySelector(".source").value = textToCopy;
+        });
+    });
+</script>

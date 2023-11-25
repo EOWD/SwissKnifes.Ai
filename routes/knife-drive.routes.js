@@ -53,11 +53,13 @@ router.get("/", isLoggedIn, async (req, res, next) => {
     const visionD = await User.findById(currentUser).populate("visions");
 
     const voicesD = await User.findById(currentUser).populate("voiceMemo");
-
+    const pro=voicesD.prompt
+    console.log(pro);
     res.render("swiss-knife-drive/swissKnifeDrive", {
       imagesD,
       visionD,
       voices: voicesD.voiceMemo,
+      voiceP:voicesD.prompt,
     });
   } catch {
     res.send;
@@ -352,14 +354,18 @@ console.log (text)
         console.log(e);
       }
       const statusT = base64Audio? true : false;
+      const pro=voicesD.prompt
+      console.log(pro)
       // Render the view and pass the filename of the saved speech file
       res.render("swiss-knife-drive/swissKnifeDrive", {
         audio: `data:audio/mpeg;base64,${base64Audio}`,
         voiceId: newVoice._id,
         imagesD,
         visionD,
-        voices: voicesD.voiceMemo,
+        voices: voicesD,
         statusT,
+        voiceP:voicesD.prompt,
+        pro,
       });
     } catch (err) {
       const imagesD = await User.findById(currentUser).populate("images");

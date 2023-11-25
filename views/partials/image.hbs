@@ -1,15 +1,13 @@
 {{#if imageUrl}}
 <div class="w- p-6 mt-12 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
   <img src="{{this.imageUrl}}" />
-  <p> Prompt:{{this.prompt}} </p>
+  <p > Prompt:{{this.prompt}} </p>
   <p>size:{{this.size}}</p>
   <form action="/dall/download-image" method="POST">
     <input type="hidden" name="imageUrl" value="{{newImageId}}" />
     <button type="submit">download</button>
   </form>
-  <form action="">
-    <button type="submit">save to knifeDrive </button>
-  </form></div>
+  
 {{/if}}
 
 <br></br>
