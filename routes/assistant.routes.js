@@ -33,12 +33,13 @@ router.get("/assistant", isLoggedIn, async (req, res) => {
         const listAllAssistants = await assistantInstance.listAssistants();
         const selectedAssistant = listAllAssistants[0] ? listAllAssistants[0].id : "";
         const listOpenaiAssistants = await assistantInstance.listOpenaiAssistants()
-        //console.log(listOpenaiAssistants)
+        //console.log(listAllAssistants)
         res.render("profile/assistant", {listAll: listAllAssistants, selectedAssistant, listOpenaiAssistants});
     } catch (error) {
         res.render("error", {error})
     }
 });
+
 
 router.post("/assistant/newAssistant", isLoggedIn, upload.array('files', 20), async (req, res, next) => {
     try {
@@ -78,7 +79,8 @@ router.post("/assistant/newAssistant", isLoggedIn, upload.array('files', 20), as
             model: createAssistantResponse.model,
             description: createAssistantResponse.description,
             instructions: createAssistantResponse.instructions,
-            file_ids: fileIds
+            file_ids: fileIds,
+            image_url: req.body.image_url,
         });
 
         const listAllAssistants = await assistantInstance.listAssistants();
@@ -95,11 +97,36 @@ router.get("/assistant/:id/edit", isLoggedIn, async (req, res) => {
         const assistantId = req.params.id
         
         const asssistantData = await assistantInstance.retrieveAssistant(assistantId)
-        console.log(asssistantData)
+        //console.log(asssistantData)
 
         res.render("profile/modifyAssistant", {asssistantData});
     } catch (error) {
         res.render("error", {error})
+    }
+});
+
+
+router.post("/assistant/:id/edit", isLoggedIn, async (req, res) => {
+    try {
+        const assistantId = req.params.id;
+        //const asssistantData = await assistantInstance.retrieveAssistant(assistantId);
+
+        const updatedData = {
+            name: req.body.name,
+            description: req.body.description,
+            instructions: req.body.instructions,
+            model: req.body.model,
+        };
+
+        // Update the assistant in your database
+        console.log(updatedData)
+        //modifyAssistant()
+
+        // Redirect to a confirmation page or back to the assistant edit page
+        res.redirect(`/assistant`);
+    } catch (error) {
+        console.error("Error updating assistant:", error);
+        res.render("error", { error });
     }
 });
 

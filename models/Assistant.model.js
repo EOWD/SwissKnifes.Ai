@@ -27,7 +27,10 @@ const assistantSchema = new Schema(
       {
         type: String
       }
-    ]
+    ],
+    image_url: {
+      type: String
+    }
   },
   {
     timestamps: true

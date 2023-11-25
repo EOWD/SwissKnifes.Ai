@@ -53,6 +53,20 @@ class VanillaAssistant {
     return myAssistant;
   }
 
+  async modifyAssistant(assistantId, name, description, instructions, model) {
+    const myUpdatedAssistant = await this.openaiApi.beta.assistants.update(
+      assistantId,
+      {
+        name: name,
+        description: description,
+        instructions: instructions,
+        model: model
+      }
+    );
+  
+    return myUpdatedAssistant;
+  }
+
 
   // DB FUNCTIONS
   

@@ -32,23 +32,29 @@ router.get("/thread", isLoggedIn, async (req, res) => {
 
 router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
     try {
-        userId = req.session.currentUser._id;
+        const userId = req.session.currentUser._id;
         const listAllAssistants = await assistantInstance.listAssistants();
-        const currentThread = req.params.threadId
-        const currentThreadTitle = await thread.findThread(currentThread)
+        const currentThread = req.params.threadId;
+        const currentThreadTitle = await thread.findThread(currentThread);
 
-        if(currentThreadTitle) {
-            const assistantName = await assistantInstance.retrieveAssistant(currentThreadTitle.assistantId)
-            const notReversedThreadMessages = await thread.listMessages(currentThread)
+        if (currentThreadTitle) {
+            let assistantName;
+            try {
+                assistantName = await assistantInstance.retrieveAssistant(currentThreadTitle.assistantId);
+            } catch (e) {
+                // Log the error for debugging purposes
+                //console.error("Error retrieving assistant: ", e);
+            }
+
+            const notReversedThreadMessages = await thread.listMessages(currentThread);
             const currentThreadMessages = notReversedThreadMessages.data.reverse();
-            let openThreads = await thread.listThreads(userId)
+            let openThreads = await thread.listThreads(userId);
 
             openThreads.forEach(thread => {
                 const assistant = listAllAssistants.find(assistant => assistant.assistantId === thread.assistantId);
-                if (assistant) {
-                    thread.assistantName = assistant.name;
-                }
+                thread.assistantName = assistant ? assistant.name : "deletedAssistant";
             });
+
             res.render("profile/thread", {
                 currentThreadMessages, 
                 openThreads, 
@@ -56,15 +62,17 @@ router.get("/thread/:threadId", isLoggedIn, async (req, res) => {
                 currentThreadTitle, 
                 listAllAssistants, 
                 username: req.session.currentUser.username,
-                assistantName: assistantName.name
-            })
+                assistantName: assistantName ? assistantName.name : "deletedAssistant"
+            });
         } else {
-            res.render("error", {error: "The Thread you are looking for, does not exist."})
+            res.render("error", {error: "The Thread you are looking for, does not exist."});
         }
     } catch (error) {
-        res.render("error", {error: error})
+        res.render("error", {error: error});
     }
 });
+
+
 
 
 router.post("/thread/createThread", isLoggedIn, async (req, res, next) => {

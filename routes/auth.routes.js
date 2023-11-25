@@ -74,7 +74,7 @@ router.post("/login", async (req, res, next) => {
       if (isMatch) {
         req.session.currentUser = user;
         console.log("match");
-       return res.redirect("/user/profile");
+       return res.redirect("/");
       } else {
         return res.render("auth/login", { logInError });
       }
