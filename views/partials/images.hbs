@@ -1,19 +1,32 @@
+<div style="display: flex; flex-direction:column-reverse">
 
- <div> 
 {{#each imagesD.images}}
-<div style="">
+<div class=" flex flex-col items-center mb-0 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
     <img src="data:image/png;base64,{{this.imageData}}" class="h-auto max-w-full rounded-lg" alt="image description"/>
     <div style="">
-    <p class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">Prompt: {{this.prompt}}</p >
+    <p class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400 sourceText">Prompt: {{this.prompt}}</p >
     </div>
-   <form action="/knifedrive/download-image" method="POST">
+
+     <div style="display: flex; justify-content:space-between; align-content:center">
+   <p style='display:none;'class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400 sourceText">Prompt: {{this.prompt}}</p >
+  <button class="patch"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+</svg> Prompt Knife </button>
+   <form class="mt-2 m-5 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/download-image" method="POST">
     <input type="hidden" name="imageUrl" value="{{this.id}}" />
     <button type="submit">download</button>
   </form>
-  <form class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
+ 
+  <form class="mt-2 m-5 text-sm text-center text-gray-500 dark:text-gray-400" action="/knifedrive/erase/{{this.id}}" method="POST">
     <button type="submit">Delete</button>
   </form>
+
+   
+    
+  </div>
  
+ </div>
 {{/each}}
+
 
 </div>
