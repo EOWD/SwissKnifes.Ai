@@ -1,31 +1,47 @@
-<h1>Modify Assistant</h1>
-<form action="/assistant/:id/edit" method="post">
-    <input type="hidden" name="id" value="{{asssistantData.id}}">
+<a href="/assistant">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white mb-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+  </svg>
+</a>
+<div class="assistContainer w-8/12 bg-slate-800 rounded-md px-5">
+    <form action="/assistant/:id/edit" method="post" class="text-black w-full">
+        <h1 class="text-3xl font-bold mb-4 pt-4 text-white">Modify Assistant</h1>
 
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" value="{{asssistantData.name}}"><br><br>
+        <input type="hidden" name="id" value="{{asssistantData.id}}">
 
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" rows="5" cols="100">{{asssistantData.description}}</textarea><br><br>
+        <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white">Name:</label>
+        <input type="text" id="name" name="name" value="{{asssistantData.name}}" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"><br><br>
 
-    <label for="instructions">Instructions:</label>
-    <textarea id="instructions" name="instructions" rows="10" cols="100">{{asssistantData.instructions}}</textarea><br><br>
+        <label for="description" class="block text-sm font-medium text-gray-900 dark:text-white">Description:</label>
+        <textarea id="description" name="description" rows="5" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{{asssistantData.description}}</textarea><br><br>
 
-    <label for="tools">Tools:</label>
-    <select name="" id="" multiple>
-        {{#each asssistantData.tools}}
-            <option value="{{this}}">{{this.type}}</option>
-        {{/each}}
-    </select>
-    <br><br>
-    <label for="model">Model:</label>
-    <select name="model" id="model" required>
-        <option value="gpt-4-1106-preview">GPT 4 Preview (1106)</option>
-        <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo (1106)</option>
-    </select>
-    <br><br>
-    <label for="file_ids">File IDs:</label>
-    <input type="text" id="file_ids" name="file_ids" value="{{asssistantData.file_ids}}"><br><br>
+        <label for="instructions" class="block text-sm font-medium text-gray-900 dark:text-white">Instructions:</label>
+        <textarea id="instructions" name="instructions" rows="10" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{{asssistantData.instructions}}</textarea><br><br>
 
-    <input type="submit" value="Submit">
-</form>
+        <label for="model" class="block text-sm font-medium text-gray-900 dark:text-white">Model:</label>
+        <select id="model" name="model" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option value="gpt-4-1106-preview">GPT 4 Preview (1106)</option>
+            <option value="gpt-3.5-turbo-1106">GPT 3.5 Turbo (1106)</option>
+        </select><br><br>
+        <button value="Submit" disabled id="saveChanges" class="w-1/2 text-white bg-blue-300 hover:bg-blue-300 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-6 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 cursor-not-allowed">Save changes</button>
+    </form>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const saveButton = document.getElementById('saveChanges');
+        // Initial class for the disabled state
+        saveButton.className = 'w-1/2 text-white bg-blue-300 hover:bg-blue-300 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-6 dark:bg-blue-300 dark:hover:bg-blue-300 focus:outline-none dark:focus:ring-blue-800 cursor-not-allowed';
+        
+        const formElements = document.querySelectorAll('#name, #description, #instructions, #model');
+
+        formElements.forEach(element => {
+            element.addEventListener('input', function () { // Use 'input' event for immediate response
+                saveButton.disabled = false;
+                // Update the class to reflect the enabled state
+                saveButton.className = 'w-1/2 text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-6 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800';
+            });
+        });
+    });
+</script>

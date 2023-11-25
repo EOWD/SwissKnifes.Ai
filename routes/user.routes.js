@@ -11,43 +11,49 @@ const { isLoggedIn, isLoggedOut } = require("../middleware/route-guard.js");
 
 router.get("/profile", isLoggedIn, (req, res, next) => {
 
-  const currentUser =  req.session.currentUser
+  const currentUser = req.session.currentUser
   const email = currentUser.email;
-  res.render("profile/profile", { userInSession: req.session.currentUser ,email});
+  res.render("profile/profile", { userInSession: req.session.currentUser, email });
 });
 
-router.post('/update',isLoggedIn, async (req, res) => {
+router.post('/update', isLoggedIn, async (req, res) => {
   try {
-    const currentUser = await req.session.currentUser
-    const userId = req.session.currentUser._id; 
-const email = currentUser.email;
-const username = req.body.username;
-const emailNew = req.body.email
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { username, emailNew },
-      { new: true } // To return the updated document
-    );
+    const userId = req.session.currentUser._id;
+    const currentUser = await User.findById(userId);
 
-  
+    const updateData = {
+      username: req.body.username || currentUser.username,
+      email: req.body.email || currentUser.email
+    };
 
- 
+    if (currentUser.username === updateData.username && currentUser.email === updateData.email) {
+      return res.render("error", {
+        error: "Please update at least one profile setting to proceed with the update!"
+      });
+    }
 
-    await user.save();
+    await User.findByIdAndUpdate(userId, updateData, { new: true });
 
-    res.redirect('/user/profile'); 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while updating the profile.' });
-  }
-});
-
-
-  
-  router.post("/logout", (req, res, next) => {
     req.session.destroy((err) => {
       if (err) next(err);
       res.redirect("/");
     });
+  } catch (error) {
+    if(error.codeName === "DuplicateKey") {
+      res.render("error", { error: 'The Username or E-Mail you tried to use is already taken.' });
+    } else {
+      res.render("error", { error: `Something went wrong: ${error}` });
+    }
+    
+  }
+});
+
+
+router.post("/logout", (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) next(err);
+    res.redirect("/");
   });
+});
+
 module.exports = router;
