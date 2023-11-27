@@ -54,35 +54,33 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.get("/login", isLoggedOut, (req, res, next) => {
+router.get("/login", isLoggedOut,async (req, res, next) => {
   res.render("auth/login");
 });
 
 router.post("/login", async (req, res, next) => {
-  console.log("SESSION =====> ", req.session);
-  const logInError = "Wrong email or password";
   try {
-    console.log(req.body.password);
     const { emailOrName, password } = req.body;
 
-    const user = await User.findOne({$or: [{ email: emailOrName } && {username: emailOrName}]});
+    const user = await User.findOne({ $or: [{ email: emailOrName }, { username: emailOrName }] });
 
-    console.log(user);
+    if (!user) {
+      return res.render("auth/login", { logInError: "User not found" });
+    }
 
-    if (user) {
-      const isMatch = bcryptjs.compareSync(password, user.password);
-      if (isMatch) {
-        req.session.currentUser = user;
-        console.log("match");
-       return res.redirect("/");
-      } else {
-        return res.render("auth/login", { logInError });
-      }
-    } 
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.render("auth/login", { logInError: "Wrong email or password" });
+    }
+
+    req.session.currentUser = user;
+    res.redirect("/");
 
   } catch (error) {
-    console.log("log in error", error);
+    console.error("Login error:", error);
+    res.status(500).render("auth/login", { logInError: "An error occurred" });
   }
 });
+
 
 module.exports = router;
